@@ -57,8 +57,7 @@ public class KNN {
     }
 
     public double calculateSimilatiry(User otherUser) {
-        Set<Movie> moviesInCommon = UserStatistics.getMoviesInCommon(user,
-                otherUser);
+        Set<Movie> moviesInCommon = UserStatistics.getMoviesInCommon(user, otherUser);
 
         double numerator = 0;
         if (moviesInCommon.isEmpty()) {
@@ -66,14 +65,11 @@ public class KNN {
         }
 
         for (Movie commonMovie : moviesInCommon) {
-            numerator += (UserStatistics.getRating(otherUser, commonMovie) - UserStatistics
-                    .getMeanRating(otherUser))
-                    * (UserStatistics.getRating(user, commonMovie) - UserStatistics
-                            .getMeanRating(user));
+            numerator += (otherUser.getRating(commonMovie) - UserStatistics.getMeanRating(otherUser))
+                    * (user.getRating(commonMovie) - UserStatistics.getMeanRating(user));
         }
 
-        double denominator = (moviesInCommon.size()
-                * UserStatistics.getStandardDeviation(user, moviesInCommon) * UserStatistics
+        double denominator = (moviesInCommon.size() * UserStatistics.getStandardDeviation(user, moviesInCommon) * UserStatistics
                 .getStandardDeviation(otherUser, moviesInCommon));
 
         if (numerator == denominator)
@@ -88,8 +84,7 @@ public class KNN {
 
         // Collect the possible new movies to recommend
         for (User neighbour : closestNeighbours.keySet()) {
-            Set<Movie> neighbourMovies = UserStatistics.getMoviesDifference(
-                    neighbour, user);
+            Set<Movie> neighbourMovies = UserStatistics.getMoviesDifference(neighbour, user);
             allMovies.addAll(neighbourMovies);
         }
 
@@ -106,14 +101,14 @@ public class KNN {
     public double getExpectedRating(Movie movie) {
         double numerator = 0;
         double denominator = 0;
-        for (Map.Entry<User, Double> neighbourSimilatiry : closestNeighbours
-                .entrySet()) {
+        for (Map.Entry<User, Double> neighbourSimilatiry : closestNeighbours.entrySet()) {
             User neighbour = neighbourSimilatiry.getKey();
             Double similarity = neighbourSimilatiry.getValue();
 
-            numerator += (similarity * (UserStatistics.getRating(neighbour,
-                    movie) - UserStatistics.getMeanRating(neighbour)));
-            denominator += Math.abs(similarity);
+            if (neighbour.getRating(movie) != 0) {
+                numerator += (similarity * (neighbour.getRating(movie) - UserStatistics.getMeanRating(neighbour)));
+                denominator += Math.abs(similarity);
+            }
         }
 
         return UserStatistics.getMeanRating(user) + numerator / denominator;
