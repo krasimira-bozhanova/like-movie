@@ -1,33 +1,63 @@
 package bg.unisofia.fmi.ai.data;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class User implements Comparable<User> {
 
-    private List<Rating> ratings;
-    private final int id;
+    private final String id;
+    private Map<Movie, Double> ratings;
 
-    public User(int id) {
+    public User(final String id) {
         this.id = id;
-        ratings = new ArrayList<Rating>();
+        this.ratings = new HashMap<>();
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public List<Rating> getRatings() {
-        return this.ratings;
+    public Map<Movie, Double> getRatings() {
+        return ratings;
     }
 
-    public void setRatings(List<Rating> ratings) {
-        this.ratings = ratings;
+    public double getRating(final Movie movie) {
+        return this.ratings.getOrDefault(movie, 0d);
+    }
+
+    // TODO
+    public void rate(final Movie movie, final double rating) {
+        this.ratings.put(movie, rating);
+        movie.addUserVote(this);
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        User other = (User) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
     }
 
     @Override
     public int compareTo(User o) {
-        if (this.id > o.getId())
-            return 1;
-        return this.id == o.getId() ? 0 : -1;
+        return this.id.compareTo(o.id);
     }
 }

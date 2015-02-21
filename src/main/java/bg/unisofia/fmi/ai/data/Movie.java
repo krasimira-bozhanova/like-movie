@@ -1,41 +1,56 @@
 package bg.unisofia.fmi.ai.data;
-import java.util.Set;
-import java.util.TreeSet;
-
 
 public class Movie implements Comparable<Movie> {
+    private final String id;
 
-    private final int id;
-    Set<User> votedUsers;
-
-    public Movie(int id) {
+    public Movie(final String id) {
         this.id = id;
-        votedUsers = new TreeSet<User>();
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public Set<User> getVotedUsers() {
-        return votedUsers;
-    }
-
+    // TODO remove
     public void addUserVote(User user) {
-        this.votedUsers.add(user);
+        // this.votedUsers.add(user);
     }
 
+    // TODO remove
     public void removeUserVote(User user) {
-        if (this.votedUsers.contains(user)) {
-            this.votedUsers.remove(user);
-        }
+        // if (this.votedUsers.contains(user)) {
+        // this.votedUsers.remove(user);
+        // }
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Movie other = (Movie) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
     }
 
     @Override
     public int compareTo(Movie o) {
-        if (this.id > o.getId())
-            return 1;
-        return this.id == o.getId() ? 0 : -1;
+        return this.id.compareTo(o.id);
     }
 
 }
