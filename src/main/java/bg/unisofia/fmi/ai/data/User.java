@@ -60,4 +60,17 @@ public class User implements Comparable<User> {
     public int compareTo(User o) {
         return this.id.compareTo(o.id);
     }
+
+    public static boolean registerUser(String username, String password,
+            String repeatPassword) throws Exception {
+        // TODO:
+        // Check if there exists a user with the same username
+        // If not - successful register
+        if (password.trim().equals("") || !password.equals(repeatPassword)) {
+            throw new Exception("Uncorrect passwords");
+        }
+
+        return true;
+
+    }
 }
