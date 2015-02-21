@@ -5,9 +5,9 @@ import java.util.stream.Collectors;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Tuple;
-import bg.unisofia.fmi.ai.Main;
 import bg.unisofia.fmi.ai.data.Movie;
 import bg.unisofia.fmi.ai.data.User;
+import bg.unisofia.fmi.ai.routes.Main;
 
 public class MovieDao {
 
