@@ -1,3 +1,4 @@
+package bg.unisofia.fmi.ai.recommend;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
@@ -5,6 +6,11 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import bg.unisofia.fmi.ai.data.Movie;
+import bg.unisofia.fmi.ai.data.Rating;
+import bg.unisofia.fmi.ai.data.User;
+import bg.unisofia.fmi.ai.recommend.KNN;
 
 public class KNNTest {
 

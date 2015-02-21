@@ -1,3 +1,4 @@
+package bg.unisofia.fmi.ai.data;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -7,6 +8,10 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.junit.Test;
+
+import bg.unisofia.fmi.ai.data.Movie;
+import bg.unisofia.fmi.ai.data.Rating;
+import bg.unisofia.fmi.ai.data.User;
 
 
 public class UserTest {

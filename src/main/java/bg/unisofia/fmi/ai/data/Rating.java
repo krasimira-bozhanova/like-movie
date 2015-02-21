@@ -1,3 +1,5 @@
+package bg.unisofia.fmi.ai.data;
+
 
 public class Rating {
 
