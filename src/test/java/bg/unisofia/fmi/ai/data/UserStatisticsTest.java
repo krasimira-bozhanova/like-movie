@@ -9,18 +9,15 @@ import java.util.TreeSet;
 
 import org.junit.Test;
 
-import bg.unisofia.fmi.ai.data.Movie;
-import bg.unisofia.fmi.ai.data.Rating;
-import bg.unisofia.fmi.ai.data.User;
+import bg.unisofia.fmi.ai.recommend.UserStatistics;
 
-
-public class UserTest {
+public class UserStatisticsTest {
 
     @Test
     public void testGetMeanRating() {
 
         User user = new User(1);
-        assertThat(user.getMeanRating()).isEqualTo(0);
+        assertThat(UserStatistics.getMeanRating(user)).isEqualTo(0);
 
         List<Rating> ratings = new ArrayList<Rating>();
 
@@ -29,11 +26,11 @@ public class UserTest {
         ratings.add(new Rating(0, null));
 
         user.setRatings(ratings);
-        assertThat(user.getMeanRating()).isEqualTo(1);
+        assertThat(UserStatistics.getMeanRating(user)).isEqualTo(1);
 
         ratings.add(new Rating(0, null));
         user.setRatings(ratings);
-        assertThat(user.getMeanRating()).isEqualTo(0.75);
+        assertThat(UserStatistics.getMeanRating(user)).isEqualTo(0.75);
 
     }
 
@@ -51,19 +48,22 @@ public class UserTest {
 
         Set<Movie> movies = new TreeSet<Movie>();
 
-        assertThat(user.getStandardDeviation(movies)).isEqualTo(0);
+        assertThat(UserStatistics.getStandardDeviation(user, movies))
+                .isEqualTo(0);
 
         movies.add(movie1);
         movies.add(movie2);
 
-        assertThat(user.getStandardDeviation(movies)).isEqualTo(0.5);
+        assertThat(UserStatistics.getStandardDeviation(user, movies))
+                .isEqualTo(0.5);
 
         Movie movie3 = new Movie(3);
         Movie movie4 = new Movie(4);
 
         ratings.add(new Rating(0, movie3));
         ratings.add(new Rating(0, movie4));
-        assertThat(user.getStandardDeviation(movies)).isEqualTo(0.9013878188659973);
+        assertThat(UserStatistics.getStandardDeviation(user, movies))
+                .isEqualTo(0.9013878188659973);
     }
 
     @Test
@@ -79,9 +79,9 @@ public class UserTest {
         ratings.add(new Rating(1, movie2));
         user.setRatings(ratings);
 
-        assertThat(user.getRating(movie1)).isEqualTo(2);
-        assertThat(user.getRating(movie2)).isEqualTo(1);
-        assertThat(user.getRating(movie3)).isEqualTo(0);
+        assertThat(UserStatistics.getRating(user, movie1)).isEqualTo(2);
+        assertThat(UserStatistics.getRating(user, movie2)).isEqualTo(1);
+        assertThat(UserStatistics.getRating(user, movie3)).isEqualTo(0);
     }
 
     @Test
@@ -122,16 +122,19 @@ public class UserTest {
         Set<User> relatedUsersToUser3 = new TreeSet<User>();
         relatedUsersToUser3.add(user2);
 
-        assertThat(user1.getRelatedUsers()).isEqualTo(relatedUsersToUser1);
-        assertThat(user2.getRelatedUsers()).isEqualTo(relatedUsersToUser2);
-        assertThat(user3.getRelatedUsers()).isEqualTo(relatedUsersToUser3);
+        assertThat(UserStatistics.getRelatedUsers(user1)).isEqualTo(
+                relatedUsersToUser1);
+        assertThat(UserStatistics.getRelatedUsers(user2)).isEqualTo(
+                relatedUsersToUser2);
+        assertThat(UserStatistics.getRelatedUsers(user3)).isEqualTo(
+                relatedUsersToUser3);
     }
 
     @Test
     public void testGetMoviesInCommon() {
         User user1 = new User(1);
         User user2 = new User(2);
-        assertThat(user1.getMoviesInCommon(user2)).isEmpty();
+        assertThat(UserStatistics.getMoviesInCommon(user1, user2)).isEmpty();
 
         Movie movie1 = new Movie(1);
         Movie movie2 = new Movie(2);
@@ -151,15 +154,17 @@ public class UserTest {
         movie2.addUserVote(user2);
         user2.setRatings(ratingUser2);
 
-        assertThat(user1.getMoviesInCommon(user2)).containsOnly(movie2);
-        assertThat(user2.getMoviesInCommon(user1)).containsOnly(movie2);
+        assertThat(UserStatistics.getMoviesInCommon(user1, user2))
+                .containsOnly(movie2);
+        assertThat(UserStatistics.getMoviesInCommon(user2, user1))
+                .containsOnly(movie2);
     }
 
     @Test
     public void testGetMoviesDifference() {
         User user1 = new User(1);
         User user2 = new User(2);
-        assertThat(user1.getMoviesDifference(user2)).isEmpty();
+        assertThat(UserStatistics.getMoviesDifference(user1, user2)).isEmpty();
 
         Movie movie1 = new Movie(1);
         Movie movie2 = new Movie(2);
@@ -179,9 +184,10 @@ public class UserTest {
         movie2.addUserVote(user2);
         user2.setRatings(ratingUser2);
 
-        assertThat(user1.getMoviesDifference(user2)).containsOnly(movie1);
-        assertThat(user2.getMoviesDifference(user1)).containsOnly(movie3);
+        assertThat(UserStatistics.getMoviesDifference(user1, user2))
+                .containsOnly(movie1);
+        assertThat(UserStatistics.getMoviesDifference(user2, user1))
+                .containsOnly(movie3);
     }
-
 
 }
