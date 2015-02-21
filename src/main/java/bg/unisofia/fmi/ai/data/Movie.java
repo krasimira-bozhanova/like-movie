@@ -1,3 +1,4 @@
+package bg.unisofia.fmi.ai.data;
 import java.util.Set;
 import java.util.TreeSet;
 

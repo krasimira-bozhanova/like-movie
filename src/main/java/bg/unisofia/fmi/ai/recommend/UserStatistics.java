@@ -1,47 +1,32 @@
-package bg.unisofia.fmi.ai.data;
+package bg.unisofia.fmi.ai.recommend;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-public class User implements Comparable<User> {
+import bg.unisofia.fmi.ai.data.Movie;
+import bg.unisofia.fmi.ai.data.Rating;
+import bg.unisofia.fmi.ai.data.User;
 
-    private List<Rating> ratings;
-    private final int id;
+public class UserStatistics {
 
-    public User(int id) {
-        this.id = id;
-        ratings = new ArrayList<Rating>();
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public List<Rating> getRatings() {
-        return this.ratings;
-    }
-
-    public void setRatings(List<Rating> ratings) {
-        this.ratings = ratings;
-    }
-
-    public double getMeanRating() {
+    public static double getMeanRating(User user) {
         double mean = 0;
 
-        if (ratings.isEmpty()) {
+        if (user.getRatings().isEmpty()) {
             return mean;
         }
 
-        for (Rating rating : ratings) {
+        for (Rating rating : user.getRatings()) {
             mean += rating.getRatingValue();
         }
 
-        return mean / ratings.size();
+        return mean / user.getRatings().size();
     }
 
-    public double getStandardDeviation(Set<Movie> movies) {
+    public static double getStandardDeviation(User user, Set<Movie> movies) {
         double sumSquares = 0;
 
         if(movies.isEmpty()) {
@@ -51,18 +36,18 @@ public class User implements Comparable<User> {
         // Get all ids of the movies in the set
         List<Integer> moviesIds = movies.stream().mapToInt(
                 m -> m.getId()).boxed().collect(Collectors.toList());
-        for (Rating rating : ratings) {
+        for (Rating rating : user.getRatings()) {
             if (movies.contains(rating.getMovie())) {
                 sumSquares += Math.pow(
-                        (rating.getRatingValue() - getMeanRating()), 2);
+                        (rating.getRatingValue() - getMeanRating(user)), 2);
             }
         }
 
         return Math.sqrt(sumSquares / movies.size());
     }
 
-    public double getRating(Movie movie) {
-        List<Rating> ratingForMovie = ratings.stream().filter(
+    public static double getRating(User user, Movie movie) {
+        List<Rating> ratingForMovie = user.getRatings().stream().filter(
                 r -> r.getMovie().getId() == movie.getId()).collect(Collectors.toList());
         if (ratingForMovie.isEmpty()) {
             return 0;
@@ -70,20 +55,20 @@ public class User implements Comparable<User> {
         return ratingForMovie.get(0).getRatingValue();
     }
 
-    public Set<User> getRelatedUsers() {
+    public static Set<User> getRelatedUsers(User user) {
         Set<User> relatedUsers = new TreeSet<User>();
 
-        for (Rating rating : ratings) {
+        for (Rating rating : user.getRatings()) {
             Set<User> usersForCurrentMovie = rating.getMovie().getVotedUsers();
             relatedUsers.addAll(usersForCurrentMovie);
         }
 
-        relatedUsers.remove(this);
+        relatedUsers.remove(user);
         return relatedUsers;
     }
 
-    public Set<Movie> getMoviesInCommon(User otherUser) {
-        Set<Movie> movies = ratings.stream()
+    public static Set<Movie> getMoviesInCommon(User user, User otherUser) {
+        Set<Movie> movies = user.getRatings().stream()
                 .map(r -> r.getMovie()).collect(Collectors.toSet());
         Set<Movie> otherUserMovies = otherUser.getRatings().stream()
                 .map(r -> r.getMovie()).collect(Collectors.toSet());
@@ -100,9 +85,9 @@ public class User implements Comparable<User> {
         return movies;
     }
 
-    public Set<Movie> getMoviesDifference(User otherUser) {
+    public static Set<Movie> getMoviesDifference(User user, User otherUser) {
         // Get all the movies that I like and the other user doesn't
-        Set<Movie> movies = ratings.stream()
+        Set<Movie> movies = user.getRatings().stream()
                 .map(r -> r.getMovie()).collect(Collectors.toSet());
 
         for (Rating otherRating : otherUser.getRatings()) {
@@ -115,10 +100,4 @@ public class User implements Comparable<User> {
 
     }
 
-    @Override
-    public int compareTo(User o) {
-        if (this.id > o.getId())
-            return 1;
-        return this.id == o.getId() ? 0 : -1;
-    }
 }
