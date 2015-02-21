@@ -209,10 +209,10 @@ body {
 .header_slide{
 	margin-top:10px;
 }
-.main_left{
+.header_bottom_left{
 	float:left;
 	width:25%;
-}_
+}
 .categories{
 	border:1px solid #EEE;
 }
@@ -244,7 +244,7 @@ body {
 .categories li a:hover{
 	color:#FC7D01;
 }
-.main_right{
+.header_bottom_right{
 	float:left;
 	width:74%;
 	padding-left:1%;
