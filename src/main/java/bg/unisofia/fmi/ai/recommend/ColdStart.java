@@ -1,5 +1,6 @@
 package bg.unisofia.fmi.ai.recommend;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +47,7 @@ public class ColdStart {
             relatedMoviesRating.put(currentMovie, sum/count);
         }
 
-        SortedSet<Map.Entry<Movie, Double>> sortedset = new TreeSet<Map.Entry<Movie, Double>>(
+        SortedSet<Map.Entry<Movie, Double>> sortedMovieSet = new TreeSet<Map.Entry<Movie, Double>>(
                 new Comparator<Map.Entry<Movie, Double>>() {
                     @Override
                     public int compare(Map.Entry<Movie, Double> e1,
@@ -57,9 +58,17 @@ public class ColdStart {
                     }
                 });
 
-        sortedset.addAll(relatedMoviesRating.entrySet());
+        sortedMovieSet.addAll(relatedMoviesRating.entrySet());
 
-        return null;
+        List<Movie> limitedMovies = new ArrayList<>();
+        int i = 0;
+        for(Map.Entry<Movie, Double> entry: sortedMovieSet) {
+            Movie currentMovie = entry.getKey();
+            if (i++ < number) {
+                limitedMovies.add(currentMovie);
+            }
+        }
+        return limitedMovies;
     }
 
 }
