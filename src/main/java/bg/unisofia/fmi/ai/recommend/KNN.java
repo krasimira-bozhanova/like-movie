@@ -1,7 +1,9 @@
 package bg.unisofia.fmi.ai.recommend;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
@@ -18,7 +20,7 @@ public class KNN {
 
     private User user;
     private Map<User, Double> closestNeighbours;
-    private SortedSet<Map.Entry<Movie, Double>> moviesToRecommend;
+    private SortedSet<Movie> moviesToRecommend;
 
     public KNN(User user, int neighboursNumber) {
         this.user = user;
@@ -27,6 +29,19 @@ public class KNN {
         closestNeighbours = getClosestNeighbours();
         moviesToRecommend = getMoviesToRecommend();
     }
+
+    public List<Movie> getMoviesToRecommend(int number) {
+        List<Movie> limitedMovies = new ArrayList<>();
+        int i = 0;
+        for(Movie movie: moviesToRecommend) {
+            if (i++ < number) {
+                limitedMovies.add(movie);
+            }
+        }
+        return limitedMovies;
+    }
+
+
 
     public Map<User, Double> getClosestNeighbours() {
         SortedMap<User, Double> pearsonCoefficients = new TreeMap<User, Double>();
@@ -80,7 +95,7 @@ public class KNN {
         return numerator / denominator;
     }
 
-    public SortedSet<Map.Entry<Movie, Double>> getMoviesToRecommend() {
+    public SortedSet<Movie> getMoviesToRecommend() {
         Map<Movie, Double> moviesRating = new HashMap<Movie, Double>();
         Set<Movie> allMovies = new TreeSet<Movie>();
 
@@ -97,18 +112,18 @@ public class KNN {
             moviesRating.put(currentMovie, expectedRating);
         }
 
-        SortedSet<Map.Entry<Movie, Double>> sortedset = new TreeSet<Map.Entry<Movie, Double>>(
-                new Comparator<Map.Entry<Movie, Double>>() {
+        SortedSet<Movie> sortedset = new TreeSet<Movie>(
+                new Comparator<Movie>() {
                     @Override
-                    public int compare(Map.Entry<Movie, Double> e1,
-                            Map.Entry<Movie, Double> e2) {
-                        if (e1.getValue().equals(e2.getValue()))
-                            return e1.getKey().compareTo(e2.getKey());
-                        return e1.getValue().compareTo(e2.getValue());
+                    public int compare(Movie e1,
+                            Movie e2) {
+                        if (moviesRating.get(e1).equals(moviesRating.get(e2)))
+                            return e1.getId().compareTo(e2.getId());
+                        return moviesRating.get(e1).compareTo(moviesRating.get(e2));
                     }
                 });
 
-        sortedset.addAll(moviesRating.entrySet());
+        sortedset.addAll(moviesRating.keySet());
 
         return sortedset;
     }
