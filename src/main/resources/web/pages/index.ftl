@@ -44,7 +44,7 @@
                                <h3>Genres</h3>
                                   <li><a href="/">All</a></li>
                                   <#list genres as x>
-                                      <li><a href="/genre/${x}">${x}</a></li>
+                                      <li><a href="/genre/${x.getId()}">${x.getName()}</a></li>
                                   </#list>  
                              </ul>
                         </div>
@@ -67,8 +67,6 @@
                 </div>
             </div>
         </div>
-        
-        <#include "preview.ftl" />
 
         <script type="text/javascript">
             $(document).ready(function() {

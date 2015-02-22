@@ -1,6 +1,7 @@
 package bg.unisofia.fmi.ai.recommend;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.TreeSet;
 
 import bg.unisofia.fmi.ai.data.Genre;
 import bg.unisofia.fmi.ai.data.Movie;
+import bg.unisofia.fmi.ai.data.MovieGenre;
 import bg.unisofia.fmi.ai.data.User;
 
 public class KNN implements Recommender {
@@ -142,7 +144,7 @@ public class KNN implements Recommender {
         List<Movie> limitedMovies = new ArrayList<>();
         int i = 0;
         for(Movie currentMovie: moviesToRecommend) {
-            List<Genre> intersectionGenres = new ArrayList<>(currentMovie.getGenres());
+            Collection<MovieGenre> intersectionGenres = new ArrayList<MovieGenre>(currentMovie.getGenres());
             intersectionGenres.retainAll(movie.getGenres());
             if (!intersectionGenres.isEmpty() && i++ < number) {
                 limitedMovies.add(currentMovie);

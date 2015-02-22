@@ -1,9 +1,6 @@
 package bg.unisofia.fmi.ai.imports;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -59,15 +56,15 @@ public class DataImporter {
                 final String title = lineParts[1];
 
                 final String imdbUrl = lineParts[4];
-                try {
-                    URL url = new URL(imdbUrl);
-                    URLConnection con = url.openConnection();
-                    con.connect();
-                    InputStream is = con.getInputStream();
-                    System.out.println("redirected url: " + con.getURL());
-                    is.close();
-                } catch (IOException ex) {
-                }
+//                try {
+//                    URL url = new URL(imdbUrl);
+//                    URLConnection con = url.openConnection();
+//                    con.connect();
+//                    InputStream is = con.getInputStream();
+//                    System.out.println("redirected url: " + con.getURL());
+//                    is.close();
+//                } catch (IOException ex) {
+//                }
 
                 final Movie movie = new Movie(movieId, title);
                 movieService.save(movie);

@@ -7,7 +7,7 @@ public class MovieGenre {
     @DatabaseField(generatedId = true)
     private int id;
 
-    @DatabaseField(foreign = true, index = true)
+    @DatabaseField(foreign = true, index = true, foreignAutoRefresh = true)
     private Movie movie;
 
     @DatabaseField(foreign = true, foreignAutoRefresh = true)

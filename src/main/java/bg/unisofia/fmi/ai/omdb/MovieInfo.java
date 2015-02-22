@@ -31,6 +31,9 @@ public class MovieInfo {
     private String id;
 
     public MovieInfo(String id, String title) {
+        System.out.println(id);
+        System.out.println(title);
+        this.id = id;
         this.title = title;
 
         retrieveData();
