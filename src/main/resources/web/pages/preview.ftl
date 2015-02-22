@@ -112,11 +112,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                         <#list movies as m>
                            <div class="special_movies">
                             <div class="movie_poster">
-                                <a href="${m.getUrlTitle()}"><img src="${m.getImage()}" alt="" /></a>
+                                <a href="${m.getId()}"><img src="${m.getImage()}" alt="" /></a>
                             </div>
                             
                             <div class="movie_desc">
-                                <h3><a href="${m.getUrlTitle()}">${m.getTitle()}</a></h3>
+                                <h3><a href="${m.getId()}">${m.getTitle()}</a></h3>
                                 <span><a href="#">Add to Cart</a></span>
                             </div>
                             <div class="clear"></div>

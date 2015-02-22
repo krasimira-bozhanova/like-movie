@@ -28,11 +28,16 @@ public class MovieInfo {
     private String country;
     private String awards;
     private String imdbRating;
+    private String id;
 
-    public MovieInfo(String title) {
+    public MovieInfo(String id, String title) {
         this.title = title;
 
         retrieveData();
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getUrlTitle() {

@@ -11,10 +11,11 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import bg.unisofia.fmi.ai.data.Genre;
 import bg.unisofia.fmi.ai.data.Movie;
 import bg.unisofia.fmi.ai.data.User;
 
-public class KNN {
+public class KNN implements Recommender {
 
     private final int neighboursNumber;
 
@@ -30,28 +31,6 @@ public class KNN {
         moviesToRecommend = getMoviesToRecommend();
     }
 
-    public List<Movie> getLimitedMoviesToRecommend(int number) {
-        List<Movie> limitedMovies = new ArrayList<>();
-        int i = 0;
-        for (Movie movie : moviesToRecommend) {
-            if (i++ < number) {
-                limitedMovies.add(movie);
-            }
-        }
-        return limitedMovies;
-    }
-
-    public List<Movie> getLimitedMoviesWithCategory(int number, String category) {
-        List<Movie> limitedMovies = new ArrayList<>();
-        int i = 0;
-        for (Movie movie : moviesToRecommend) {
-            if (movie.getGenres().contains(category) && i++ < number) {
-                limitedMovies.add(movie);
-            }
-        }
-        return limitedMovies;
-    }
-
     public Map<User, Double> getClosestNeighbours() {
         SortedMap<User, Double> pearsonCoefficients = new TreeMap<User, Double>();
         Map<User, Double> closestUsersSimilarity = new HashMap<User, Double>();
@@ -65,21 +44,16 @@ public class KNN {
             // and we want to sort the users depending on the similarity
             // we are negating the absolute value of the coefficient
             pearsonCoefficients.put(relatedUser, -Math.abs(similarity));
-
         }
 
         // TODO check if these users have something new to offer to the current
         // user and if not - get some of the not-so-similar users
         int closeUsers = 0;
         for (Map.Entry<User, Double> entry : pearsonCoefficients.entrySet()) {
-            if (closeUsers++ >= neighboursNumber)
-                break;
-
+            if (closeUsers++ >= neighboursNumber) break;
             closestUsersSimilarity.put(entry.getKey(), -entry.getValue());
         }
-
         return closestUsersSimilarity;
-
     }
 
     public double calculateSimilatiry(User otherUser) {
@@ -149,5 +123,43 @@ public class KNN {
         }
 
         return UserStatistics.getMeanRating(user) + numerator / denominator;
+    }
+
+    @Override
+    public List<Movie> getTopMovies(int number) {
+        List<Movie> limitedMovies = new ArrayList<>();
+        int i = 0;
+        for(Movie movie: moviesToRecommend) {
+            if (i++ < number) {
+                limitedMovies.add(movie);
+            }
+        }
+        return limitedMovies;
+    }
+
+    @Override
+    public List<Movie> getSimilarMovies(int number, Movie movie) {
+        List<Movie> limitedMovies = new ArrayList<>();
+        int i = 0;
+        for(Movie currentMovie: moviesToRecommend) {
+            List<Genre> intersectionGenres = new ArrayList<>(currentMovie.getGenres());
+            intersectionGenres.retainAll(movie.getGenres());
+            if (!intersectionGenres.isEmpty() && i++ < number) {
+                limitedMovies.add(currentMovie);
+            }
+        }
+        return limitedMovies;
+    }
+
+    @Override
+    public List<Movie> getMoviesWithGenre(int number, Genre genre) {
+        List<Movie> limitedMovies = new ArrayList<>();
+        int i = 0;
+        for(Movie currentMovie: moviesToRecommend) {
+            if (currentMovie.getGenres().contains(genre) && i++ < number) {
+                limitedMovies.add(currentMovie);
+            }
+        }
+        return limitedMovies;
     }
 }
