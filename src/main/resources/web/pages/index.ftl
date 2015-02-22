@@ -3,11 +3,11 @@
         <title>Free Movies Store Website Template | Home :: w3layouts</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-        <link href="css/style.css" rel="stylesheet" type="text/css" media="all"/>
-        <script type="text/javascript" src="js/jquery-1.9.0.min.js"></script> 
-        <script type="text/javascript" src="js/move-top.js"></script>
-        <script type="text/javascript" src="js/easing.js"></script>
-        <script type="text/javascript" src="js/jquery.nivo.slider.js"></script>
+        <link href="/css/style.css" rel="stylesheet" type="text/css" media="all"/>
+        <script type="text/javascript" src="/js/jquery-1.9.0.min.js"></script> 
+        <script type="text/javascript" src="/js/move-top.js"></script>
+        <script type="text/javascript" src="/js/easing.js"></script>
+        <script type="text/javascript" src="/js/jquery.nivo.slider.js"></script>
     </head>
     <body>
         <div class="header">
@@ -32,7 +32,7 @@
             <div class="wrap">
                 <div class="header_top">
                     <div class="logo">
-                        <a href="index.html"><img src="images/logo.png" alt="" /></a>
+                        <a href="index.html"><img src="/images/logo.png" alt="" /></a>
                     </div>
                     <div class="header_top_right">
                         <div class="search_box">
@@ -51,7 +51,7 @@
                                <h3>Categories</h3>
                                   <li><a href="/">All</a></li>
                                   <#list categories as x>
-                                      <li><a href="category/${x}">${x}</a></li>
+                                      <li><a href="/category/${x}">${x}</a></li>
                                   </#list>  
                              </ul>
                         </div>
@@ -63,145 +63,13 @@
                             </div>
                         </div>
                         <div class="section group">
-                            <div class="grid_1_of_5 images_1_of_5">
-                                <a href="preview"><img src="images/end-game.jpg" alt="" /></a>
-                                <h2><a href="preview">End Game</a></h2>
-                                <div class="price-details">
-                                    <div class="price-number">
-                                        <p><span class="rupees">$620.87</span></p>
-                                    </div>
-                                    <div class="add-cart">
-                                        <h4><a href="preview.html">Add to Cart</a></h4>
-                                    </div>
-                                    <div class="clear"></div>
+                            <#list movies as m>
+                                <div class="grid_1_of_5 images_1_of_5">
+                                    <a href="preview/${m.getUrlTitle()}"><img src="${m.getImage()}" alt="" /></a>
+                                    <h2><a href="preview/${m.getUrlTitle()}">${m.getTitle()}</a></h2>
                                 </div>
-                            </div>
-                            <div class="grid_1_of_5 images_1_of_5">
-                                <a href="preview.html"><img src="images/Sorority_Wars.jpg" alt="" /></a>
-                                <h2><a href="preview.html">Sorority Wars</a></h2>
-                                <div class="price-details">
-                                    <div class="price-number">
-                                        <p><span class="rupees">$620.87</span></p>
-                                    </div>
-                                    <div class="add-cart">
-                                        <h4><a href="preview.html">Add to Cart</a></h4>
-                                    </div>
-                                    <div class="clear"></div>
-                                </div>
-                            </div>
-                            <div class="grid_1_of_5 images_1_of_5">
-                                <a href="preview.html"><img src="images/New-Moon-The-Score-cover-twilight.jpg" alt="" /></a>
-                                <h2><a href="preview.html">Twilight New Moon</a></h2>
-                                <div class="price-details">
-                                    <div class="price-number">
-                                        <p><span class="rupees">$899.75</span></p>
-                                    </div>
-                                    <div class="add-cart">
-                                        <h4><a href="preview.html">Add to Cart</a></h4>
-                                    </div>
-                                    <div class="clear"></div>
-                                </div>
-                            </div>
-                            <div class="grid_1_of_5 images_1_of_5">
-                                <a href="preview.html"><img src="images/avatar_movie.jpg" alt="" /></a>
-                                <h2><a href="preview.html">Avatar</a></h2>
-                                <div class="price-details">
-                                    <div class="price-number">
-                                        <p><span class="rupees">$599.00</span></p>
-                                    </div>
-                                    <div class="add-cart">                              
-                                        <h4><a href="preview.html">Add to Cart</a></h4>
-                                    </div>
-                                    <div class="clear"></div>
-                                </div>
-                            </div>
-                            <div class="grid_1_of_5 images_1_of_5">
-                                <a href="preview.html"><img src="images/black-swan.jpg" alt="" /></a>
-                                <h2><a href="preview.html">Black Swan</a></h2>
-                                <div class="price-details">
-                                    <div class="price-number">
-                                        <p><span class="rupees">$679.87</span></p>
-                                    </div>
-                                    <div class="add-cart">
-                                        <h4><a href="preview.html">Add to Cart</a></h4>
-                                    </div>
-                                    <div class="clear"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <br />
-                        <div class="content_top">
-                            <div class="heading">
-                                <h3>Best rated</h3>
-                            </div>
-                        </div>
-                        <div class="section group">
-                            <div class="grid_1_of_5 images_1_of_5">
-                                <a href="preview"><img src="images/end-game.jpg" alt="" /></a>
-                                <h2><a href="preview">End Game</a></h2>
-                                <div class="price-details">
-                                    <div class="price-number">
-                                        <p><span class="rupees">$620.87</span></p>
-                                    </div>
-                                    <div class="add-cart">
-                                        <h4><a href="preview.html">Add to Cart</a></h4>
-                                    </div>
-                                    <div class="clear"></div>
-                                </div>
-                            </div>
-                            <div class="grid_1_of_5 images_1_of_5">
-                                <a href="preview.html"><img src="images/Sorority_Wars.jpg" alt="" /></a>
-                                <h2><a href="preview.html">Sorority Wars</a></h2>
-                                <div class="price-details">
-                                    <div class="price-number">
-                                        <p><span class="rupees">$620.87</span></p>
-                                    </div>
-                                    <div class="add-cart">
-                                        <h4><a href="preview.html">Add to Cart</a></h4>
-                                    </div>
-                                    <div class="clear"></div>
-                                </div>
-                            </div>
-                            <div class="grid_1_of_5 images_1_of_5">
-                                <a href="preview.html"><img src="images/New-Moon-The-Score-cover-twilight.jpg" alt="" /></a>
-                                <h2><a href="preview.html">Twilight New Moon</a></h2>
-                                <div class="price-details">
-                                    <div class="price-number">
-                                        <p><span class="rupees">$899.75</span></p>
-                                    </div>
-                                    <div class="add-cart">
-                                        <h4><a href="preview.html">Add to Cart</a></h4>
-                                    </div>
-                                    <div class="clear"></div>
-                                </div>
-                            </div>
-                            <div class="grid_1_of_5 images_1_of_5">
-                                <a href="preview.html"><img src="images/avatar_movie.jpg" alt="" /></a>
-                                <h2><a href="preview.html">Avatar</a></h2>
-                                <div class="price-details">
-                                    <div class="price-number">
-                                        <p><span class="rupees">$599.00</span></p>
-                                    </div>
-                                    <div class="add-cart">                              
-                                        <h4><a href="preview.html">Add to Cart</a></h4>
-                                    </div>
-                                    <div class="clear"></div>
-                                </div>
-                            </div>
-                            <div class="grid_1_of_5 images_1_of_5">
-                                <a href="preview.html"><img src="images/black-swan.jpg" alt="" /></a>
-                                <h2><a href="preview.html">Black Swan</a></h2>
-                                <div class="price-details">
-                                    <div class="price-number">
-                                        <p><span class="rupees">$679.87</span></p>
-                                    </div>
-                                    <div class="add-cart">
-                                        <h4><a href="preview.html">Add to Cart</a></h4>
-                                    </div>
-                                    <div class="clear"></div>
-                                </div>
-                            </div>
-                        </div>
+                            </#list> 
+                        <br/>
                     </div>
                 </div>
             </div>

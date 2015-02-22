@@ -22,9 +22,16 @@ public class MovieInfo {
     private String director;
     private String plot;
     private String image;
+    private String writer;
+    private String actors;
+    private String language;
+    private String country;
+    private String awards;
+    private String imdbRating;
 
     public MovieInfo(String title) {
-        this.urlTitle = title;
+        this.title = title;
+
         retrieveData();
     }
 
@@ -60,17 +67,40 @@ public class MovieInfo {
         return image;
     }
 
+    public String getWriter() {
+        return writer;
+    }
+
+    public String getActors() {
+        return actors;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public String getAwards() {
+        return awards;
+    }
+
+    public String getImdbRating() {
+        return imdbRating;
+    }
+
     private void retrieveData() {
 
-        String urlString;
         try {
-            urlString = "http://www.omdbapi.com/?t="
-                    + URLEncoder.encode(this.title, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
+            this.urlTitle = URLEncoder.encode(this.title, "UTF-8");
+        } catch (UnsupportedEncodingException e1) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
-            return;
+            e1.printStackTrace();
         }
+
+        String urlString = "http://www.omdbapi.com/?t=" + this.urlTitle;
 
         URL url;
         try {
@@ -116,7 +146,7 @@ public class MovieInfo {
 
         JSONObject obj = new JSONObject(result);
 
-        //TODO: create object in static method
+        // TODO: create object in static method
         this.title = obj.getString("Title");
         this.year = obj.getString("Year");
         this.runtime = obj.getString("Runtime");
@@ -124,7 +154,11 @@ public class MovieInfo {
         this.director = obj.getString("Director");
         this.plot = obj.getString("Plot");
         this.image = obj.getString("Poster");
-
+        this.writer = obj.getString("Writer");
+        this.actors = obj.getString("Actors");
+        this.language = obj.getString("Language");
+        this.country = obj.getString("Country");
+        this.awards = obj.getString("Awards");
+        this.imdbRating = obj.getString("imdbRating");
     }
-
 }
