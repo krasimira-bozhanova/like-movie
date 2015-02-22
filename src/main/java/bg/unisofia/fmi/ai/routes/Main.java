@@ -14,7 +14,6 @@ import java.util.Map;
 
 import spark.ModelAndView;
 import bg.unisofia.fmi.ai.data.Movie;
-import bg.unisofia.fmi.ai.data.User;
 import bg.unisofia.fmi.ai.imports.DataImporter;
 import bg.unisofia.fmi.ai.omdb.MovieFetcher;
 import bg.unisofia.fmi.ai.omdb.MovieInfo;
@@ -73,11 +72,11 @@ public class Main {
             String password = request.queryParams("password");
             String passwordRepeat = request.queryParams("repeat_password");
 
-            try {
-                User.registerUser(username, password, passwordRepeat);
-            } catch (Exception e) {
-                response.redirect("/register");
-            }
+//            try {
+//                //User.registerUser(username, password, passwordRepeat);
+//            } catch (Exception e) {
+//                response.redirect("/register");
+//            }
             response.redirect("/");
             return request;
         });
