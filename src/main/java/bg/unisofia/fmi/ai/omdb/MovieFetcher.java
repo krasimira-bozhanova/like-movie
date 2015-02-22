@@ -48,11 +48,11 @@ public class MovieFetcher {
                 .collect(Collectors.toList());
     }
 
-    public List<MovieInfo> getMoviesWithGenre(int number, String genre) {
-        // TODO: create real genre object
-        Genre genreObject = new Genre("a", genre);
+    public List<MovieInfo> getMoviesWithGenre(int number, Genre genre) {
 
-        return currentRecommender.getMoviesWithGenre(number, genreObject)
+        List<Movie> moviesWithGenre = currentRecommender.getMoviesWithGenre(number, genre);
+
+        return moviesWithGenre
                 .stream().map(m -> new MovieInfo(m.getId(), m.getTitle()))
                 .collect(Collectors.toList());
     }

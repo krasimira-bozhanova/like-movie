@@ -5,15 +5,16 @@ import static spark.Spark.post;
 import static spark.SparkBase.staticFileLocation;
 
 import java.io.IOException;
-import java.net.URLDecoder;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import spark.ModelAndView;
 import bg.unisofia.fmi.ai.dao.GenreService;
+import bg.unisofia.fmi.ai.dao.UserService;
+import bg.unisofia.fmi.ai.data.Genre;
 import bg.unisofia.fmi.ai.data.Movie;
 import bg.unisofia.fmi.ai.db.util.DbUtil;
 import bg.unisofia.fmi.ai.imports.DataImporter;
@@ -29,26 +30,29 @@ public class Main {
         DataImporter.movielensIntoDbImporter("src/main/resources/datasets/");
 
         GenreService genreService = new GenreService(DbUtil.getConnectionSource());
+        UserService userService = new UserService(DbUtil.getConnectionSource());
 
-        List<String> genres = genreService.list().stream().map(g -> g.getName()).collect(Collectors.toList());
+        List<Genre> genres = genreService.list();
 
         MovieFetcher fetcher = new MovieFetcher();
 
         get("/", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
-            List<MovieInfo> movies = fetcher.getFrontPageMovies(5);
-            attributes.put("message", "Hello World!");
+            //List<MovieInfo> movies = fetcher.getFrontPageMovies(5);
+            List<MovieInfo> movies = new ArrayList<MovieInfo>();
             attributes.put("genres", genres);
             attributes.put("movies", movies);
 
             return new ModelAndView(attributes, "index.ftl");
         }, new FreeMarkerEngine());
 
-        get("/genre/:genreName", (request, response) -> {
-            String chosenGenre = request.params(":genreName");
+        get("/genre/:genreId", (request, response) -> {
+            String chosenGenreId = request.params(":genreId");
+
+            Genre genre = genreService.find(Integer.parseInt(chosenGenreId));
 
             Map<String, Object> attributes = new HashMap<>();
-            List<MovieInfo> movies = fetcher.getMoviesWithGenre(5, chosenGenre);
+            List<MovieInfo> movies = fetcher.getMoviesWithGenre(5, genre);
             attributes.put("message", "Hello World!");
             attributes.put("genres", genres);
             attributes.put("movies", movies);
@@ -68,11 +72,11 @@ public class Main {
             String password = request.queryParams("password");
             String passwordRepeat = request.queryParams("repeat_password");
 
-            // try {
-            // //User.registerUser(username, password, passwordRepeat);
-            // } catch (Exception e) {
-            // response.redirect("/register");
-            // }
+             try {
+                 userService.registerUser(username, password, passwordRepeat);
+             } catch (Exception e) {
+                 response.redirect("/register");
+             }
                 response.redirect("/");
                 return request;
             });
@@ -86,13 +90,7 @@ public class Main {
 
         get("/preview/:movieId", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
-            String chosenMovieId = null;
-            try {
-                chosenMovieId = URLDecoder.decode(request.params(":movieId"), "UTF-8");
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            String chosenMovieId = request.params(":movieId");
 
             Movie movie = fetcher.getRecommender().getMovieService().find(chosenMovieId);
             MovieInfo movieInfo = new MovieInfo(chosenMovieId, movie.getTitle());
