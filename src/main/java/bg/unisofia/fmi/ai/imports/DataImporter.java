@@ -3,13 +3,10 @@ package bg.unisofia.fmi.ai.imports;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.stream.Stream;
 
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Transaction;
 import bg.unisofia.fmi.ai.dao.GenreService;
 import bg.unisofia.fmi.ai.dao.MovieService;
 import bg.unisofia.fmi.ai.dao.RatingService;
@@ -19,30 +16,11 @@ import bg.unisofia.fmi.ai.data.Movie;
 import bg.unisofia.fmi.ai.data.Rating;
 import bg.unisofia.fmi.ai.data.User;
 import bg.unisofia.fmi.ai.db.util.DbUtil;
-import bg.unisofia.fmi.ai.routes.Main;
 
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
 public class DataImporter {
-
-    public static void movielensIntoRedisImporter(final Path datasetPath) throws IOException {
-        try (Stream<String> lines = Files.lines(datasetPath, Charset.defaultCharset());
-                Jedis jedis = Main.pool.getResource()) {
-
-            final Transaction t = jedis.multi();
-            lines.forEachOrdered(line -> {
-                final String[] lineParts = line.split("\t");
-                final String userId = "user_" + lineParts[0];
-                final String movieId = "movie_" + lineParts[1];
-                final double score = Double.parseDouble(lineParts[2]);
-
-                t.zadd(movieId, score, userId);
-                t.zadd(userId, score, movieId);
-            });
-            t.exec();
-        }
-    }
 
     public static void movielensIntoDbImporter(final String datasetPath) throws IOException, SQLException {
 

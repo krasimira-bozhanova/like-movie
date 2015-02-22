@@ -13,13 +13,6 @@
         <div class="header">
             <div class="headertop_desc">
                 <div class="wrap">
-                    <div class="nav_list">
-                        <ul>
-                            <li><a href="index.html">${message}</a></li>
-                            <li><a href="contact.html">Sitemap</a></li>
-                            <li><a href="contact.html">Contact</a></li>
-                        </ul>
-                    </div>
                     <div class="account_desc">
                         <ul>
                             <li><a href="register">Register</a></li>
@@ -48,10 +41,10 @@
                     <div class="header_bottom_left">
                         <div class="categories">
                            <ul>
-                               <h3>Categories</h3>
+                               <h3>Genres</h3>
                                   <li><a href="/">All</a></li>
-                                  <#list categories as x>
-                                      <li><a href="/category/${x}">${x}</a></li>
+                                  <#list genres as x>
+                                      <li><a href="/genre/${x}">${x}</a></li>
                                   </#list>  
                              </ul>
                         </div>
@@ -65,8 +58,8 @@
                         <div class="section group">
                             <#list movies as m>
                                 <div class="grid_1_of_5 images_1_of_5">
-                                    <a href="preview/${m.getUrlTitle()}"><img src="${m.getImage()}" alt="" /></a>
-                                    <h2><a href="preview/${m.getUrlTitle()}">${m.getTitle()}</a></h2>
+                                    <a href="/movies/${m.getId()}"><img src="${m.getImage()}" alt="" /></a>
+                                    <h2><a href="/movies/${m.getId()}">${m.getTitle()}</a></h2>
                                 </div>
                             </#list> 
                         <br/>
@@ -74,6 +67,8 @@
                 </div>
             </div>
         </div>
+        
+        <#include "preview.ftl" />
 
         <script type="text/javascript">
             $(document).ready(function() {

@@ -19,7 +19,7 @@ public class Movie implements Comparable<Movie>, Serializable {
     @ForeignCollectionField(eager = false)
     private ForeignCollection<Rating> ratings;
 
-    private List<String> genres;
+    private List<Genre> genres;
 
     public Movie() {
     }
@@ -37,7 +37,7 @@ public class Movie implements Comparable<Movie>, Serializable {
         return this.title;
     }
 
-    public List<String> getGenres() {
+    public List<Genre> getGenres() {
         return genres;
     }
 
