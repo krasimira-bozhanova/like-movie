@@ -4,16 +4,16 @@ public class Movie implements Comparable<Movie> {
     private final String id;
     private String category;
     //TODO: include title
-    //private final String title;
+    private String title;
 
     public Movie(final String id) {
         //this.title = title;
         this.id = id;
     }
 
-//    public String getTitle() {
-//        return this.title;
-//    }
+    public String getTitle() {
+        return this.title;
+    }
 
     public String getId() {
         return id;

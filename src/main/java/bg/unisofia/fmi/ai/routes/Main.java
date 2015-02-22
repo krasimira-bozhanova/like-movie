@@ -13,7 +13,6 @@ import java.util.Map;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import spark.ModelAndView;
-import bg.unisofia.fmi.ai.data.Movie;
 import bg.unisofia.fmi.ai.data.User;
 import bg.unisofia.fmi.ai.omdb.MovieInfo;
 import bg.unisofia.fmi.ai.recommend.MovieRecommender;
@@ -38,7 +37,7 @@ public class Main {
 
         get("/", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
-            List<Movie> movies = recommender.getFrontPageMovies(5);
+            List<MovieInfo> movies = recommender.getFrontPageMovies(5);
             attributes.put("message", "Hello World!");
             attributes.put("categories", categories);
             attributes.put("movies", movies);
@@ -50,7 +49,7 @@ public class Main {
             String chosenCategory = request.params(":categoryName");
             System.out.println(chosenCategory);
             Map<String, Object> attributes = new HashMap<>();
-            List<Movie> movies = recommender.getMoviesFromCategory(5, chosenCategory);
+            List<MovieInfo> movies = recommender.getMoviesFromCategory(5, chosenCategory);
             attributes.put("message", "Hello World!");
             attributes.put("categories", categories);
             attributes.put("movies", movies);
@@ -90,9 +89,9 @@ public class Main {
             Map<String, Object> attributes = new HashMap<>();
             attributes.put("message", "preview");
             String chosenTitle = request.params(":movieName");
-            Movie movie = Movie.getMovieWithTitle(chosenTitle);
+            MovieInfo movieInfo = new MovieInfo(chosenTitle);
 
-            List<Movie> movies = recommender.getSimilarMovies(5, movie);
+            List<MovieInfo> movies = recommender.getSimilarMovies(5, movieInfo);
             attributes.put("categories", categories);
             attributes.put("movie", new MovieInfo(chosenTitle));
             attributes.put("movies", movies);
