@@ -1,9 +1,11 @@
 package bg.unisofia.fmi.ai.recommend;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
+import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -16,7 +18,7 @@ public class KNN {
 
     private User user;
     private Map<User, Double> closestNeighbours;
-    private SortedMap<Movie, Double> moviesToRecommend;
+    private SortedSet<Map.Entry<Movie, Double>> moviesToRecommend;
 
     public KNN(User user, int neighboursNumber) {
         this.user = user;
@@ -78,8 +80,8 @@ public class KNN {
         return numerator / denominator;
     }
 
-    public SortedMap<Movie, Double> getMoviesToRecommend() {
-        SortedMap<Movie, Double> moviesRating = new TreeMap<Movie, Double>();
+    public SortedSet<Map.Entry<Movie, Double>> getMoviesToRecommend() {
+        Map<Movie, Double> moviesRating = new HashMap<Movie, Double>();
         Set<Movie> allMovies = new TreeSet<Movie>();
 
         // Collect the possible new movies to recommend
@@ -95,7 +97,20 @@ public class KNN {
             moviesRating.put(currentMovie, expectedRating);
         }
 
-        return moviesRating;
+        SortedSet<Map.Entry<Movie, Double>> sortedset = new TreeSet<Map.Entry<Movie, Double>>(
+                new Comparator<Map.Entry<Movie, Double>>() {
+                    @Override
+                    public int compare(Map.Entry<Movie, Double> e1,
+                            Map.Entry<Movie, Double> e2) {
+                        if (e1.getValue().equals(e2.getValue()))
+                            return e1.getKey().compareTo(e2.getKey());
+                        return e1.getValue().compareTo(e2.getValue());
+                    }
+                });
+
+        sortedset.addAll(moviesRating.entrySet());
+
+        return sortedset;
     }
 
     public double getExpectedRating(Movie movie) {
