@@ -13,10 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 import spark.ModelAndView;
-import bg.unisofia.fmi.ai.dao.UserService;
 import bg.unisofia.fmi.ai.data.Movie;
 import bg.unisofia.fmi.ai.data.User;
-import bg.unisofia.fmi.ai.db.util.DbUtil;
 import bg.unisofia.fmi.ai.imports.DataImporter;
 import bg.unisofia.fmi.ai.omdb.MovieFetcher;
 import bg.unisofia.fmi.ai.omdb.MovieInfo;
@@ -27,6 +25,8 @@ public class Main {
 
     public static void main(String[] args) throws IOException, SQLException {
         staticFileLocation("/web");
+        DataImporter.movielensIntoDbImporter("src/main/resources/datasets/");
+
         List<String> genres = new ArrayList<String>();
         MovieFetcher fetcher = new MovieFetcher();
 
@@ -38,8 +38,6 @@ public class Main {
         genres.add("Comedy");
         genres.add("Family");
         genres.add("Animation");
-
-        // DataImporter.movielensIntoDbImporter("src/main/resources/datasets/");
 
         get("/", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();

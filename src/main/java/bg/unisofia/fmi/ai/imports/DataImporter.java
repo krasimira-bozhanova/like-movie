@@ -1,6 +1,9 @@
 package bg.unisofia.fmi.ai.imports;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -22,7 +25,8 @@ import com.j256.ormlite.table.TableUtils;
 
 public class DataImporter {
 
-    public static void movielensIntoDbImporter(final String datasetPath) throws IOException, SQLException {
+    public static void movielensIntoDbImporter(final String datasetPath)
+            throws IOException, SQLException {
 
         ConnectionSource connectionSource = DbUtil.getConnectionSource();
         final MovieService movieService = new MovieService(connectionSource);
@@ -35,7 +39,8 @@ public class DataImporter {
         TableUtils.createTableIfNotExists(connectionSource, Genre.class);
         TableUtils.createTableIfNotExists(connectionSource, Rating.class);
 
-        try (Stream<String> lines = Files.lines(Paths.get(datasetPath, "u.genre"), Charset.defaultCharset())) {
+        try (Stream<String> lines = Files.lines(
+                Paths.get(datasetPath, "u.genre"), Charset.defaultCharset())) {
             lines.forEachOrdered(line -> {
                 final String[] lineParts = line.split("\\|");
                 final String name = lineParts[0];
@@ -45,16 +50,31 @@ public class DataImporter {
             });
         }
 
-        try (Stream<String> lines = Files.lines(Paths.get(datasetPath, "u.item"), Charset.defaultCharset())) {
+        try (Stream<String> lines = Files.lines(
+                Paths.get(datasetPath, "u.item"), Charset.defaultCharset())) {
             lines.forEachOrdered(line -> {
                 final String[] lineParts = line.split("\\|");
                 final String movieId = lineParts[0];
-                final String name = lineParts[1];
+                final String imdbUrl = lineParts[4];
+                try {
+                    URL url = new URL(imdbUrl);
+                    URLConnection con = url.openConnection();
+                    con.connect();
+                    InputStream is = con.getInputStream();
+                    System.out.println("redirected url: " + con.getURL());
+                    is.close();
+
+                } catch (IOException ex) {
+
+                }
+                final String name = lineParts[1].substring(0,
+                        lineParts[1].lastIndexOf("(") - 1);
                 movieService.save(new Movie(movieId, name));
             });
         }
 
-        try (Stream<String> lines = Files.lines(Paths.get(datasetPath, "u.user"), Charset.defaultCharset())) {
+        try (Stream<String> lines = Files.lines(
+                Paths.get(datasetPath, "u.user"), Charset.defaultCharset())) {
             lines.forEachOrdered(line -> {
                 final String[] lineParts = line.split("\\|");
                 final String userId = lineParts[0];
@@ -62,7 +82,8 @@ public class DataImporter {
             });
         }
 
-        try (Stream<String> lines = Files.lines(Paths.get(datasetPath, "u.data"), Charset.defaultCharset())) {
+        try (Stream<String> lines = Files.lines(
+                Paths.get(datasetPath, "u.data"), Charset.defaultCharset())) {
             lines.forEachOrdered(line -> {
                 final String[] lineParts = line.split("\t");
 

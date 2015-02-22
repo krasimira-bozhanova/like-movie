@@ -134,6 +134,8 @@ public class MovieInfo {
         String inputLine;
         String result = "";
 
+        System.out.println(this.title);
+
         try {
             while ((inputLine = in.readLine()) != null) {
                 result += inputLine;
@@ -150,6 +152,8 @@ public class MovieInfo {
         }
 
         JSONObject obj = new JSONObject(result);
+        System.out.println(result);
+        System.out.println(obj);
 
         // TODO: create object in static method
         this.title = obj.getString("Title");
