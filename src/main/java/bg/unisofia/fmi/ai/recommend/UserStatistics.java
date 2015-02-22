@@ -5,9 +5,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import bg.unisofia.fmi.ai.dao.MovieDao;
+import bg.unisofia.fmi.ai.dao.UserService;
 import bg.unisofia.fmi.ai.data.Movie;
 import bg.unisofia.fmi.ai.data.User;
+import bg.unisofia.fmi.ai.db.util.DbUtil;
 
 public class UserStatistics {
 
@@ -33,9 +34,10 @@ public class UserStatistics {
 
     public static Set<User> getRelatedUsers(User user) {
         Set<User> relatedUsers = new TreeSet<User>();
+        final UserService userService = new UserService(DbUtil.getConnectionSource());
 
         user.getRatings().forEach((movie, rating) -> {
-            Set<User> usersForCurrentMovie = MovieDao.getVotedUsers(movie);
+            Set<User> usersForCurrentMovie = userService.getVotedUsers(movie);
             relatedUsers.addAll(usersForCurrentMovie);
         });
         relatedUsers.remove(user);

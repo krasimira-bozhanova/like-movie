@@ -6,6 +6,7 @@ import static spark.SparkBase.staticFileLocation;
 
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +15,10 @@ import java.util.Map;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import spark.ModelAndView;
+import bg.unisofia.fmi.ai.dao.UserService;
 import bg.unisofia.fmi.ai.data.User;
+import bg.unisofia.fmi.ai.db.util.DbUtil;
+import bg.unisofia.fmi.ai.imports.DataImporter;
 import bg.unisofia.fmi.ai.omdb.MovieInfo;
 import bg.unisofia.fmi.ai.recommend.MovieRecommender;
 import bg.unisofia.fmi.ai.template.FreeMarkerEngine;
@@ -22,7 +26,7 @@ import bg.unisofia.fmi.ai.template.FreeMarkerEngine;
 public class Main {
     public static JedisPool pool = new JedisPool(new JedisPoolConfig(), "localhost");
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, SQLException {
         staticFileLocation("/web");
         List<String> categories = new ArrayList<String>();
         MovieRecommender recommender = new MovieRecommender();
@@ -35,6 +39,10 @@ public class Main {
         categories.add("Comedy");
         categories.add("Family");
         categories.add("Animation");
+
+        DataImporter.movielensIntoDbImporter("src/main/resources/datasets/");
+
+        new UserService(DbUtil.getConnectionSource()).find("196");
 
         get("/", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
@@ -69,7 +77,7 @@ public class Main {
             String username = request.queryParams("username");
             String password = request.queryParams("password");
             String passwordRepeat = request.queryParams("repeat_password");
-            String message;
+
             try {
                 User.registerUser(username, password, passwordRepeat);
             } catch (Exception e) {

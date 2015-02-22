@@ -3,10 +3,17 @@ package bg.unisofia.fmi.ai.data;
 import java.util.HashMap;
 import java.util.Map;
 
-public class User implements Comparable<User> {
+import com.j256.ormlite.field.DatabaseField;
 
-    private final String id;
+public class User implements Comparable<User> {
+    @DatabaseField(id = true)
+    private String id;
+
     private Map<Movie, Double> ratings;
+
+    public User() {
+        this.ratings = new HashMap<>();
+    }
 
     public User(final String id) {
         this.id = id;
@@ -61,8 +68,7 @@ public class User implements Comparable<User> {
         return this.id.compareTo(o.id);
     }
 
-    public static boolean registerUser(String username, String password,
-            String repeatPassword) throws Exception {
+    public static boolean registerUser(String username, String password, String repeatPassword) throws Exception {
         // TODO:
         // Check if there exists a user with the same username
         // If not - successful register

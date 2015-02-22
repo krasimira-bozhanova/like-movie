@@ -1,14 +1,27 @@
 package bg.unisofia.fmi.ai.data;
 
-public class Movie implements Comparable<Movie> {
-    private final String id;
-    private String category;
-    //TODO: include title
+import java.io.Serializable;
+import java.util.List;
+
+import com.j256.ormlite.field.DatabaseField;
+
+public class Movie implements Comparable<Movie>, Serializable {
+    private static final long serialVersionUID = -7596256343825532435L;
+
+    @DatabaseField(id = true)
+    private String id;
+
+    @DatabaseField
     private String title;
 
-    public Movie(final String id) {
-        //this.title = title;
+    private List<String> genres;
+
+    public Movie() {
+    }
+
+    public Movie(final String id, final String title) {
         this.id = id;
+        this.title = title;
     }
 
     public String getTitle() {
@@ -19,8 +32,8 @@ public class Movie implements Comparable<Movie> {
         return id;
     }
 
-    public String getCategory() {
-        return category;
+    public List<String> getGenres() {
+        return genres;
     }
 
     // TODO remove
@@ -63,11 +76,6 @@ public class Movie implements Comparable<Movie> {
     @Override
     public int compareTo(Movie o) {
         return this.id.compareTo(o.id);
-    }
-
-    public static Movie getMovieWithTitle(String title) {
-        //TODO
-        return new Movie("a");
     }
 
 }
