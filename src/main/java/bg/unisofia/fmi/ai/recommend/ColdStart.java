@@ -19,6 +19,10 @@ public class ColdStart {
         return null;
     }
 
+    public static List<Movie> getRandomMoviesWithCategory(int number, String category) {
+        return null;
+    }
+
     public static List<Movie> getSimilarMovies(Movie movie, int number) {
         // People who liked this also liked...
         Set<User> usersForCurrentMovie = MovieDao.getVotedUsers(movie);

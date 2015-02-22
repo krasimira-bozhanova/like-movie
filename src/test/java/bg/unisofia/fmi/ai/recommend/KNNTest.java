@@ -86,7 +86,7 @@ public class KNNTest {
 
         KNN newUserProblem = new KNN(newUser, 2);
 
-        assertThat(newUserProblem.getMoviesToRecommend()).containsOnlyKeys(movie2, movie4);
+        assertThat(newUserProblem.getMoviesToRecommend()).containsOnly(movie2, movie4);
     }
 
     @Test
