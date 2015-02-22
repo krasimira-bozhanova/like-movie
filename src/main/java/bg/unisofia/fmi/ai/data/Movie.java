@@ -1,14 +1,10 @@
 package bg.unisofia.fmi.ai.data;
 
-import java.io.Serializable;
-import java.util.List;
-
 import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 
-public class Movie implements Comparable<Movie>, Serializable {
-    private static final long serialVersionUID = -7596256343825532435L;
+public class Movie implements Comparable<Movie> {
 
     @DatabaseField(id = true)
     private String id;
@@ -19,7 +15,8 @@ public class Movie implements Comparable<Movie>, Serializable {
     @ForeignCollectionField(eager = false)
     private ForeignCollection<Rating> ratings;
 
-    private List<Genre> genres;
+    @ForeignCollectionField(eager = false)
+    private ForeignCollection<MovieGenre> genres;
 
     public Movie() {
     }
@@ -34,10 +31,10 @@ public class Movie implements Comparable<Movie>, Serializable {
     }
 
     public String getTitle() {
-        return this.title;
+        return title;
     }
 
-    public List<Genre> getGenres() {
+    public ForeignCollection<MovieGenre> getGenres() {
         return genres;
     }
 
