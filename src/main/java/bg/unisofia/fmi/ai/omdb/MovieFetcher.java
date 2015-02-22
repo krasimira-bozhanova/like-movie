@@ -18,12 +18,13 @@ public class MovieFetcher {
     List<MovieInfo> movieInfos = new ArrayList<MovieInfo>();
 
     public MovieFetcher() {
-//        movieInfos.add(new MovieInfo("The hunt"));
-//        movieInfos.add(new MovieInfo("Titanic"));
-//        movieInfos.add(new MovieInfo("12 years a slave"));
-//
-//        movieInfos.add(new MovieInfo("Bad Teacher"));
-//        movieInfos.add(new MovieInfo("Knight and Day"));
+        currentRecommender = new ColdStart();
+        // movieInfos.add(new MovieInfo("The hunt"));
+        // movieInfos.add(new MovieInfo("Titanic"));
+        // movieInfos.add(new MovieInfo("12 years a slave"));
+        //
+        // movieInfos.add(new MovieInfo("Bad Teacher"));
+        // movieInfos.add(new MovieInfo("Knight and Day"));
     }
 
     public Recommender getRecommender() {
@@ -40,7 +41,9 @@ public class MovieFetcher {
 
     public List<MovieInfo> getFrontPageMovies(int number) {
 
-        return currentRecommender.getTopMovies(number).stream()
+        List<Movie> topMovies = currentRecommender.getTopMovies(number);
+
+        return topMovies.stream()
                 .map(m -> new MovieInfo(m.getId(), m.getTitle()))
                 .collect(Collectors.toList());
     }
