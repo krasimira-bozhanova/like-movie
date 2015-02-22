@@ -40,9 +40,7 @@ public class Main {
         categories.add("Family");
         categories.add("Animation");
 
-        DataImporter.movielensIntoDbImporter("src/main/resources/datasets/");
-
-        new UserService(DbUtil.getConnectionSource()).find("196");
+        // DataImporter.movielensIntoDbImporter("src/main/resources/datasets/");
 
         get("/", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();

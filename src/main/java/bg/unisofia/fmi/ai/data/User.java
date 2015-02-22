@@ -1,41 +1,43 @@
 package bg.unisofia.fmi.ai.data;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 
+import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 
 public class User implements Comparable<User> {
     @DatabaseField(id = true)
     private String id;
 
-    private Map<Movie, Double> ratings;
+    @ForeignCollectionField(eager = false)
+    private ForeignCollection<Rating> ratings;
 
     public User() {
-        this.ratings = new HashMap<>();
     }
 
     public User(final String id) {
         this.id = id;
-        this.ratings = new HashMap<>();
     }
 
     public String getId() {
         return id;
     }
 
-    public Map<Movie, Double> getRatings() {
+    public ForeignCollection<Rating> getRatings() {
         return ratings;
     }
 
     public double getRating(final Movie movie) {
-        return this.ratings.getOrDefault(movie, 0d);
+        Optional<Double> rating = ratings.stream().filter(r -> r.getMovie().equals(movie)).map(Rating::getRating)
+                .findFirst();
+
+        return rating.orElse(0d);
     }
 
-    // TODO
     public void rate(final Movie movie, final double rating) {
-        this.ratings.put(movie, rating);
-        movie.addUserVote(this);
+        // TODO
+        // this.ratings.put(movie, rating);
     }
 
     @Override

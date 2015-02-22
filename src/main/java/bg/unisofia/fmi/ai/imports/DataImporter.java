@@ -12,9 +12,11 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Transaction;
 import bg.unisofia.fmi.ai.dao.GenreService;
 import bg.unisofia.fmi.ai.dao.MovieService;
+import bg.unisofia.fmi.ai.dao.RatingService;
 import bg.unisofia.fmi.ai.dao.UserService;
 import bg.unisofia.fmi.ai.data.Genre;
 import bg.unisofia.fmi.ai.data.Movie;
+import bg.unisofia.fmi.ai.data.Rating;
 import bg.unisofia.fmi.ai.data.User;
 import bg.unisofia.fmi.ai.db.util.DbUtil;
 import bg.unisofia.fmi.ai.routes.Main;
@@ -48,10 +50,12 @@ public class DataImporter {
         final MovieService movieService = new MovieService(connectionSource);
         final UserService userService = new UserService(connectionSource);
         final GenreService genreService = new GenreService(connectionSource);
+        final RatingService ratingService = new RatingService(connectionSource);
 
         TableUtils.createTableIfNotExists(connectionSource, User.class);
         TableUtils.createTableIfNotExists(connectionSource, Movie.class);
         TableUtils.createTableIfNotExists(connectionSource, Genre.class);
+        TableUtils.createTableIfNotExists(connectionSource, Rating.class);
 
         try (Stream<String> lines = Files.lines(Paths.get(datasetPath, "u.genre"), Charset.defaultCharset())) {
             lines.forEachOrdered(line -> {
@@ -83,13 +87,12 @@ public class DataImporter {
         try (Stream<String> lines = Files.lines(Paths.get(datasetPath, "u.data"), Charset.defaultCharset())) {
             lines.forEachOrdered(line -> {
                 final String[] lineParts = line.split("\t");
-                final String userId = lineParts[0];
-                final String movieId = lineParts[1];
+
+                final User u = userService.find(lineParts[0]);
+                final Movie m = movieService.find(lineParts[1]);
                 final double rating = Double.parseDouble(lineParts[2]);
 
-                final User u = userService.find(userId);
-                u.rate(movieService.find(movieId), rating);
-                userService.save(u);
+                ratingService.save(new Rating(u, m, rating));
             });
         }
     }

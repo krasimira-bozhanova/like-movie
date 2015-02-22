@@ -8,11 +8,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
-import bg.unisofia.fmi.ai.dao.UserService;
 import bg.unisofia.fmi.ai.data.Movie;
+import bg.unisofia.fmi.ai.data.Rating;
 import bg.unisofia.fmi.ai.data.User;
-import bg.unisofia.fmi.ai.db.util.DbUtil;
 
 public class ColdStart {
 
@@ -25,15 +25,14 @@ public class ColdStart {
     }
 
     public static List<Movie> getSimilarMovies(Movie movie, int number) {
-        final UserService userService = new UserService(DbUtil.getConnectionSource());
-
         // People who liked this also liked...
-        Set<User> usersForCurrentMovie = userService.getVotedUsers(movie);
+        Set<User> usersForCurrentMovie = movie.getRatings().stream().map(r -> r.getUser()).collect(Collectors.toSet());
         Map<Movie, Double> relatedMoviesSum = new HashMap<>();
         Map<Movie, Integer> relatedMoviesCount = new HashMap<>();
         for (User currentUser : usersForCurrentMovie) {
-            for (Movie currentMovie : currentUser.getRatings().keySet()) {
-                double rating = currentUser.getRatings().get(currentMovie);
+            for (Rating currentRating : currentUser.getRatings()) {
+                Movie currentMovie = currentRating.getMovie();
+                double rating = currentRating.getRating();
 
                 if (!relatedMoviesSum.containsKey(currentMovie)) {
                     relatedMoviesSum.put(currentMovie, 0.0);

@@ -33,7 +33,7 @@ public class KNN {
     public List<Movie> getLimitedMoviesToRecommend(int number) {
         List<Movie> limitedMovies = new ArrayList<>();
         int i = 0;
-        for(Movie movie: moviesToRecommend) {
+        for (Movie movie : moviesToRecommend) {
             if (i++ < number) {
                 limitedMovies.add(movie);
             }
@@ -44,15 +44,13 @@ public class KNN {
     public List<Movie> getLimitedMoviesWithCategory(int number, String category) {
         List<Movie> limitedMovies = new ArrayList<>();
         int i = 0;
-        for(Movie movie: moviesToRecommend) {
-            if (movie.getCategory().equals(category) && i++ < number) {
+        for (Movie movie : moviesToRecommend) {
+            if (movie.getGenres().contains(category) && i++ < number) {
                 limitedMovies.add(movie);
             }
         }
         return limitedMovies;
     }
-
-
 
     public Map<User, Double> getClosestNeighbours() {
         SortedMap<User, Double> pearsonCoefficients = new TreeMap<User, Double>();
@@ -123,16 +121,14 @@ public class KNN {
             moviesRating.put(currentMovie, expectedRating);
         }
 
-        SortedSet<Movie> sortedset = new TreeSet<Movie>(
-                new Comparator<Movie>() {
-                    @Override
-                    public int compare(Movie e1,
-                            Movie e2) {
-                        if (moviesRating.get(e1).equals(moviesRating.get(e2)))
-                            return e1.getId().compareTo(e2.getId());
-                        return moviesRating.get(e1).compareTo(moviesRating.get(e2));
-                    }
-                });
+        SortedSet<Movie> sortedset = new TreeSet<Movie>(new Comparator<Movie>() {
+            @Override
+            public int compare(Movie e1, Movie e2) {
+                if (moviesRating.get(e1).equals(moviesRating.get(e2)))
+                    return e1.getId().compareTo(e2.getId());
+                return moviesRating.get(e1).compareTo(moviesRating.get(e2));
+            }
+        });
 
         sortedset.addAll(moviesRating.keySet());
 
