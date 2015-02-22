@@ -45,24 +45,16 @@
                     <div class="clear"></div>
                 </div>
                 <div class="header_bottom">
-                    <div class="header_bottom_left">                
+                    <div class="header_bottom_left">
                         <div class="categories">
                            <ul>
                                <h3>Categories</h3>
-                                  <li><a href="#">All</a></li>
-                                  <li><a href="#">Hindi</a></li>
-                                  <li><a href="#">Telugu</a></li>
-                                  <li><a href="#">English</a></li>
-                                  <li><a href="#">Tamil</a></li>
-                                   <li><a href="#">Malayalam</a></li>
-                                   <li><a href="#">Kannada</a></li>
-                                   <li><a href="#">Bengali</a></li>
-                                   <li><a href="#">Assami</a></li>
-                                   <li><a href="#">Kids</a></li>
-                                   <li><a href="#">Animation</a></li>
-                                   <li><a href="#">Games</a></li>
+                                  <li><a href="/">All</a></li>
+                                  <#list categories as x>
+                                      <li><a href="category/${x}">${x}</a></li>
+                                  </#list>  
                              </ul>
-                        </div>                  
+                        </div>
                      </div>
                     <div class="header_bottom_right">
                         <div class="content_top">

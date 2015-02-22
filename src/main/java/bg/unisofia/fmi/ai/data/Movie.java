@@ -2,13 +2,25 @@ package bg.unisofia.fmi.ai.data;
 
 public class Movie implements Comparable<Movie> {
     private final String id;
+    private String category;
+    //TODO: include title
+    //private final String title;
 
     public Movie(final String id) {
+        //this.title = title;
         this.id = id;
     }
 
+//    public String getTitle() {
+//        return this.title;
+//    }
+
     public String getId() {
         return id;
+    }
+
+    public String getCategory() {
+        return category;
     }
 
     // TODO remove
@@ -51,6 +63,11 @@ public class Movie implements Comparable<Movie> {
     @Override
     public int compareTo(Movie o) {
         return this.id.compareTo(o.id);
+    }
+
+    public static Movie getMovieWithTitle(String title) {
+        //TODO
+        return new Movie("a");
     }
 
 }

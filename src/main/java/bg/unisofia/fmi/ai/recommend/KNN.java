@@ -30,11 +30,22 @@ public class KNN {
         moviesToRecommend = getMoviesToRecommend();
     }
 
-    public List<Movie> getMoviesToRecommend(int number) {
+    public List<Movie> getLimitedMoviesToRecommend(int number) {
         List<Movie> limitedMovies = new ArrayList<>();
         int i = 0;
         for(Movie movie: moviesToRecommend) {
             if (i++ < number) {
+                limitedMovies.add(movie);
+            }
+        }
+        return limitedMovies;
+    }
+
+    public List<Movie> getLimitedMoviesWithCategory(int number, String category) {
+        List<Movie> limitedMovies = new ArrayList<>();
+        int i = 0;
+        for(Movie movie: moviesToRecommend) {
+            if (movie.getCategory().equals(category) && i++ < number) {
                 limitedMovies.add(movie);
             }
         }
