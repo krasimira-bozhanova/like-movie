@@ -10,7 +10,7 @@ import com.j256.ormlite.support.ConnectionSource;
 
 public class GenreService {
 
-    private RuntimeExceptionDao<Genre, String> genreDao;
+    private RuntimeExceptionDao<Genre, Integer> genreDao;
 
     public GenreService(ConnectionSource connectionSource) {
         try {
@@ -20,11 +20,15 @@ public class GenreService {
         }
     }
 
-    public List<Genre> listGenres() {
+    public List<Genre> list() {
         return genreDao.queryForAll();
     }
 
-    public void saveGenre(Genre genre) {
+    public Genre find(final int genreId) {
+        return genreDao.queryForId(genreId);
+    }
+
+    public void save(final Genre genre) {
         genreDao.createOrUpdate(genre);
     }
 

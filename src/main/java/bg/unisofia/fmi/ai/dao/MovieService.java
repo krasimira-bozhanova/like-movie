@@ -25,7 +25,7 @@ public class MovieService {
         return movieDao.queryForId(movieId);
     }
 
-    public List<Movie> getRandom(int limit) {
+    public List<Movie> getRandom(long limit) {
         QueryBuilder<Movie, String> queryBuilder = movieDao.queryBuilder();
         queryBuilder.orderByRaw("RANDOM()");
         queryBuilder.limit(limit);
@@ -45,7 +45,7 @@ public class MovieService {
         return null;
     }
 
-    public void save(Movie movie) {
+    public void save(final Movie movie) {
         movieDao.createOrUpdate(movie);
     }
 

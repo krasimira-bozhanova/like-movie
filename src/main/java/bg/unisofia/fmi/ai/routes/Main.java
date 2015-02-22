@@ -7,36 +7,32 @@ import static spark.SparkBase.staticFileLocation;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import spark.ModelAndView;
+import bg.unisofia.fmi.ai.dao.GenreService;
 import bg.unisofia.fmi.ai.data.Movie;
+import bg.unisofia.fmi.ai.db.util.DbUtil;
 import bg.unisofia.fmi.ai.imports.DataImporter;
 import bg.unisofia.fmi.ai.omdb.MovieFetcher;
 import bg.unisofia.fmi.ai.omdb.MovieInfo;
 import bg.unisofia.fmi.ai.template.FreeMarkerEngine;
 
 public class Main {
-    //public static JedisPool pool = new JedisPool(new JedisPoolConfig(), "localhost");
 
     public static void main(String[] args) throws IOException, SQLException {
         staticFileLocation("/web");
+
         DataImporter.movielensIntoDbImporter("src/main/resources/datasets/");
 
-        List<String> genres = new ArrayList<String>();
-        MovieFetcher fetcher = new MovieFetcher();
+        GenreService genreService = new GenreService(DbUtil.getConnectionSource());
 
-        genres.add("Adventure");
-        genres.add("Drama");
-        genres.add("Horror");
-        genres.add("Action");
-        genres.add("Mistery");
-        genres.add("Comedy");
-        genres.add("Family");
-        genres.add("Animation");
+        List<String> genres = genreService.list().stream().map(g -> g.getName()).collect(Collectors.toList());
+
+        MovieFetcher fetcher = new MovieFetcher();
 
         get("/", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
@@ -72,14 +68,14 @@ public class Main {
             String password = request.queryParams("password");
             String passwordRepeat = request.queryParams("repeat_password");
 
-//            try {
-//                //User.registerUser(username, password, passwordRepeat);
-//            } catch (Exception e) {
-//                response.redirect("/register");
-//            }
-            response.redirect("/");
-            return request;
-        });
+            // try {
+            // //User.registerUser(username, password, passwordRepeat);
+            // } catch (Exception e) {
+            // response.redirect("/register");
+            // }
+                response.redirect("/");
+                return request;
+            });
 
         get("/login", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
@@ -104,6 +100,7 @@ public class Main {
             List<MovieInfo> movies = fetcher.getSimilarMovies(5, movieInfo);
             attributes.put("genres", genres);
             attributes.put("movie", movieInfo);
+
             attributes.put("movies", movies);
             return new ModelAndView(attributes, "preview.ftl");
 
