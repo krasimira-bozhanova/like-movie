@@ -5,6 +5,7 @@ import static spark.Spark.post;
 import static spark.SparkBase.staticFileLocation;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,8 +55,8 @@ public class Main {
             attributes.put("categories", categories);
             attributes.put("movies", movies);
 
-            return null;
-        });
+            return new ModelAndView(attributes, "index.ftl");
+        }, new FreeMarkerEngine());
 
         get("/register", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
@@ -88,7 +89,14 @@ public class Main {
         get("/preview/:movieName", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
             attributes.put("message", "preview");
-            String chosenTitle = request.params(":movieName");
+            String chosenTitle = null;
+            try {
+                chosenTitle = URLDecoder.decode(request.params(":movieName"), "UTF-8");
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            System.out.println(chosenTitle);
             MovieInfo movieInfo = new MovieInfo(chosenTitle);
 
             List<MovieInfo> movies = recommender.getSimilarMovies(5, movieInfo);
