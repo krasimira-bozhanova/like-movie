@@ -52,7 +52,8 @@ public class KNN implements Recommender {
         // user and if not - get some of the not-so-similar users
         int closeUsers = 0;
         for (Map.Entry<User, Double> entry : pearsonCoefficients.entrySet()) {
-            if (closeUsers++ >= neighboursNumber) break;
+            if (closeUsers++ >= neighboursNumber)
+                break;
             closestUsersSimilarity.put(entry.getKey(), -entry.getValue());
         }
         return closestUsersSimilarity;
@@ -131,7 +132,7 @@ public class KNN implements Recommender {
     public List<Movie> getTopMovies(int number) {
         List<Movie> limitedMovies = new ArrayList<>();
         int i = 0;
-        for(Movie movie: moviesToRecommend) {
+        for (Movie movie : moviesToRecommend) {
             if (i++ < number) {
                 limitedMovies.add(movie);
             }
@@ -143,9 +144,11 @@ public class KNN implements Recommender {
     public List<Movie> getSimilarMovies(int number, Movie movie) {
         List<Movie> limitedMovies = new ArrayList<>();
         int i = 0;
-        for(Movie currentMovie: moviesToRecommend) {
+
+        for (Movie currentMovie : moviesToRecommend) {
             Collection<MovieGenre> intersectionGenres = new ArrayList<MovieGenre>(currentMovie.getGenres());
             intersectionGenres.retainAll(movie.getGenres());
+
             if (!intersectionGenres.isEmpty() && i++ < number) {
                 limitedMovies.add(currentMovie);
             }
@@ -157,7 +160,7 @@ public class KNN implements Recommender {
     public List<Movie> getMoviesWithGenre(int number, Genre genre) {
         List<Movie> limitedMovies = new ArrayList<>();
         int i = 0;
-        for(Movie currentMovie: moviesToRecommend) {
+        for (Movie currentMovie : moviesToRecommend) {
             if (currentMovie.getGenres().contains(genre) && i++ < number) {
                 limitedMovies.add(currentMovie);
             }

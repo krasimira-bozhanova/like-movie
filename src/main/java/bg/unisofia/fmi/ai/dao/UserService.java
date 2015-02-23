@@ -15,11 +15,9 @@ public class UserService {
 
     public UserService(ConnectionSource connectionSource) {
         try {
-            userDao = RuntimeExceptionDao.createDao(connectionSource,
-                    User.class);
+            userDao = RuntimeExceptionDao.createDao(connectionSource, User.class);
         } catch (SQLException e) {
-            throw new RuntimeException(
-                    "Problems initializing database objects", e);
+            throw new RuntimeException("Problems initializing database objects", e);
         }
     }
 
@@ -33,19 +31,18 @@ public class UserService {
         return userDao.queryForFieldValues(queryArguments).isEmpty();
     }
 
-    public boolean registerUser(String username, String password,
-            String repeatPassword) throws Exception {
+    public boolean registerUser(String username, String password, String repeatPassword) throws Exception {
 
         if (password.trim().equals("") || !password.equals(repeatPassword)) {
             throw new Exception("Uncorrect passwords");
         }
 
-        if(!isUsernameAvailable(username)) {
+        if (!isUsernameAvailable(username)) {
             throw new Exception("User with this username already exists");
         }
 
-        //User newUser = new User()
-        //save(new User)
+        // User newUser = new User()
+        // save(new User)
 
         return true;
 
@@ -53,6 +50,10 @@ public class UserService {
 
     public void save(final User user) {
         userDao.createOrUpdate(user);
+    }
+
+    public void refresh(User user) {
+        userDao.refresh(user);
     }
 
 }

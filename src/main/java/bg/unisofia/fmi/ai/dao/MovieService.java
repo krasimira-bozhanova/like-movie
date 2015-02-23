@@ -63,4 +63,8 @@ public class MovieService {
         movieDao.createOrUpdate(movie);
     }
 
+    public void refresh(final Movie movie) {
+        movieDao.refresh(movie);
+    }
+
 }

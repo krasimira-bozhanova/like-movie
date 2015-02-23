@@ -31,12 +31,13 @@ public class ColdStart implements Recommender {
     public List<Movie> getSimilarMovies(int number, Movie movie) {
         // People who liked this also liked...
         // TODO: Check genre
-        Set<User> usersForCurrentMovie = movie.getRatings().stream()
-                .map(r -> r.getUser()).collect(Collectors.toSet());
+        Set<User> usersForCurrentMovie = movie.getRatings().stream().map(r -> r.getUser()).collect(Collectors.toSet());
 
         Map<Movie, Double> relatedMoviesSum = new HashMap<>();
         Map<Movie, Integer> relatedMoviesCount = new HashMap<>();
         for (User currentUser : usersForCurrentMovie) {
+            userService.refresh(currentUser);
+
             for (Rating currentRating : currentUser.getRatings()) {
                 Movie currentMovie = currentRating.getMovie();
                 double rating = currentRating.getRating();
@@ -46,10 +47,8 @@ public class ColdStart implements Recommender {
                     relatedMoviesCount.put(currentMovie, 0);
                 }
 
-                relatedMoviesSum.put(currentMovie,
-                        relatedMoviesSum.get(currentMovie) + rating);
-                relatedMoviesCount.put(currentMovie,
-                        relatedMoviesCount.get(currentMovie) + 1);
+                relatedMoviesSum.put(currentMovie, relatedMoviesSum.get(currentMovie) + rating);
+                relatedMoviesCount.put(currentMovie, relatedMoviesCount.get(currentMovie) + 1);
             }
         }
 
@@ -64,11 +63,8 @@ public class ColdStart implements Recommender {
         SortedSet<Map.Entry<Movie, Double>> sortedMovieSet = new TreeSet<Map.Entry<Movie, Double>>(
                 new Comparator<Map.Entry<Movie, Double>>() {
                     @Override
-                    public int compare(Map.Entry<Movie, Double> e1,
-                            Map.Entry<Movie, Double> e2) {
-                        if (e1.getValue().equals(e2.getValue()))
-                            return e1.getKey().compareTo(e2.getKey());
-                        return e1.getValue().compareTo(e2.getValue());
+                    public int compare(Map.Entry<Movie, Double> e1, Map.Entry<Movie, Double> e2) {
+                        return Double.compare(e1.getValue(), e2.getValue());
                     }
                 });
 
@@ -79,6 +75,7 @@ public class ColdStart implements Recommender {
         for (Map.Entry<Movie, Double> entry : sortedMovieSet) {
             Movie currentMovie = entry.getKey();
             if (i++ < number) {
+                movieService.refresh(currentMovie);
                 limitedMovies.add(currentMovie);
             }
         }

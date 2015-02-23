@@ -38,13 +38,13 @@ public class Main {
 
         get("/", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
-            //List<MovieInfo> movies = fetcher.getFrontPageMovies(5);
-            List<MovieInfo> movies = new ArrayList<MovieInfo>();
-            attributes.put("genres", genres);
-            attributes.put("movies", movies);
+            // List<MovieInfo> movies = fetcher.getFrontPageMovies(5);
+                List<MovieInfo> movies = new ArrayList<MovieInfo>();
+                attributes.put("genres", genres);
+                attributes.put("movies", movies);
 
-            return new ModelAndView(attributes, "index.ftl");
-        }, new FreeMarkerEngine());
+                return new ModelAndView(attributes, "index.ftl");
+            }, new FreeMarkerEngine());
 
         get("/genre/:genreId", (request, response) -> {
             String chosenGenreId = request.params(":genreId");
@@ -72,14 +72,14 @@ public class Main {
             String password = request.queryParams("password");
             String passwordRepeat = request.queryParams("repeat_password");
 
-             try {
-                 userService.registerUser(username, password, passwordRepeat);
-             } catch (Exception e) {
-                 response.redirect("/register");
-             }
-                response.redirect("/");
-                return request;
-            });
+            try {
+                userService.registerUser(username, password, passwordRepeat);
+            } catch (Exception e) {
+                response.redirect("/register");
+            }
+            response.redirect("/");
+            return request;
+        });
 
         get("/login", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
@@ -88,20 +88,18 @@ public class Main {
 
         }, new FreeMarkerEngine());
 
-        get("/preview/:movieId", (request, response) -> {
-            Map<String, Object> attributes = new HashMap<>();
+        get("/movies/:movieId", (request, response) -> {
             String chosenMovieId = request.params(":movieId");
 
             Movie movie = fetcher.getRecommender().getMovieService().find(chosenMovieId);
-            MovieInfo movieInfo = new MovieInfo(chosenMovieId, movie.getTitle());
+            MovieInfo movieInfo = new MovieInfo(chosenMovieId, movie.getImdbId());
 
-            List<MovieInfo> movies = fetcher.getSimilarMovies(5, movieInfo);
+            Map<String, Object> attributes = new HashMap<>();
             attributes.put("genres", genres);
             attributes.put("movie", movieInfo);
+            attributes.put("movies", fetcher.getSimilarMovies(5, movieInfo));
 
-            attributes.put("movies", movies);
             return new ModelAndView(attributes, "preview.ftl");
-
         }, new FreeMarkerEngine());
 
     }

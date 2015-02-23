@@ -7,7 +7,6 @@
         <script type="text/javascript" src="/js/jquery-1.9.0.min.js"></script> 
         <script type="text/javascript" src="/js/move-top.js"></script>
         <script type="text/javascript" src="/js/easing.js"></script>
-        <script type="text/javascript" src="/js/jquery.nivo.slider.js"></script>
     </head>
     <body>
         <div class="header">
@@ -58,11 +57,12 @@
                         <div class="section group">
                             <#list movies as m>
                                 <div class="grid_1_of_5 images_1_of_5">
-                                    <a href="/movies/${m.getId()}"><img src="${m.getImage()}" alt="" /></a>
-                                    <h2><a href="/movies/${m.getId()}">${m.getTitle()}</a></h2>
+                                    <a href="/movies/${m.id }"><img src="${m.image }" alt="${m.title }" /></a>
+                                    <h2><a href="/movies/${m.id }">${m.title }</a></h2>
                                 </div>
                             </#list> 
-                        <br/>
+                            <br/>
+                        </div>
                     </div>
                 </div>
             </div>
