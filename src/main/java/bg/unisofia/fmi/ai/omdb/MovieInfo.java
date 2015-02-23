@@ -3,17 +3,13 @@ package bg.unisofia.fmi.ai.omdb;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLEncoder;
 
 import org.json.JSONObject;
 
 public class MovieInfo {
-
-    private String urlTitle;
 
     private String title;
     private String year;
@@ -29,22 +25,17 @@ public class MovieInfo {
     private String awards;
     private String imdbRating;
     private String id;
+    private String imdbId;
 
-    public MovieInfo(String id, String title) {
-        System.out.println(id);
-        System.out.println(title);
+    public MovieInfo(String id, String imdbId) {
         this.id = id;
-        this.title = title;
+        this.imdbId = imdbId;
 
         retrieveData();
     }
 
     public String getId() {
         return id;
-    }
-
-    public String getUrlTitle() {
-        return urlTitle;
     }
 
     public String getTitle() {
@@ -100,15 +91,7 @@ public class MovieInfo {
     }
 
     private void retrieveData() {
-
-        try {
-            this.urlTitle = URLEncoder.encode(this.title, "UTF-8");
-        } catch (UnsupportedEncodingException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-
-        String urlString = "http://www.omdbapi.com/?t=" + this.urlTitle;
+        String urlString = "http://www.omdbapi.com/?i=" + this.imdbId + "&plot=full&r=json";
 
         URL url;
         try {
@@ -137,8 +120,6 @@ public class MovieInfo {
         String inputLine;
         String result = "";
 
-        System.out.println(this.title);
-
         try {
             while ((inputLine = in.readLine()) != null) {
                 result += inputLine;
@@ -155,8 +136,6 @@ public class MovieInfo {
         }
 
         JSONObject obj = new JSONObject(result);
-        System.out.println(result);
-        System.out.println(obj);
 
         // TODO: create object in static method
         this.title = obj.getString("Title");

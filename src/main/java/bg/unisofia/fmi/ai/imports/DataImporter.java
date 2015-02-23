@@ -49,24 +49,14 @@ public class DataImporter {
             });
         }
 
-        try (Stream<String> lines = Files.lines(Paths.get(datasetPath, "u.item"), Charset.defaultCharset())) {
+        try (Stream<String> lines = Files.lines(Paths.get(datasetPath, "u.item.imdb"), Charset.forName("UTF-8"))) {
             lines.forEachOrdered(line -> {
                 final String[] lineParts = line.split("\\|");
                 final String movieId = lineParts[0];
                 final String title = lineParts[1];
+                final String imdbId = lineParts[4];
 
-                final String imdbUrl = lineParts[4];
-//                try {
-//                    URL url = new URL(imdbUrl);
-//                    URLConnection con = url.openConnection();
-//                    con.connect();
-//                    InputStream is = con.getInputStream();
-//                    System.out.println("redirected url: " + con.getURL());
-//                    is.close();
-//                } catch (IOException ex) {
-//                }
-
-                final Movie movie = new Movie(movieId, title);
+                final Movie movie = new Movie(movieId, title, imdbId);
                 movieService.save(movie);
 
                 for (int i = 6; i < lineParts.length; i++) {

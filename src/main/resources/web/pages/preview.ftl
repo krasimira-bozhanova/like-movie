@@ -20,7 +20,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                 <div class="wrap">
                     <div class="nav_list">
                         <ul>
-                            <li><a href="index.html">${message}</a></li>
+                            <li><a href="index.html">Home</a></li>
                             <li><a href="contact.html">Sitemap</a></li>
                             <li><a href="contact.html">Contact</a></li>
                         </ul>
@@ -65,7 +65,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                     <div class="cont-desc span_1_of_2">
                         <div class="product-details">
                             <div class="grid images_3_of_2">
-                                <img src="${movie.getImage()}" alt="" />
+                                <img src="${movie.image }" alt="" />
                             </div>
                             <div class="desc span_3_of_2">
                                 <h2>${movie.getTitle()}</h2>

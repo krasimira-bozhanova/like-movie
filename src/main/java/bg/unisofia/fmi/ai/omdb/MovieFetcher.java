@@ -43,27 +43,20 @@ public class MovieFetcher {
 
         List<Movie> topMovies = currentRecommender.getTopMovies(number);
 
-        return topMovies.stream()
-                .map(m -> new MovieInfo(m.getId(), m.getTitle()))
-                .collect(Collectors.toList());
+        return topMovies.stream().map(m -> new MovieInfo(m.getId(), m.getImdbId())).collect(Collectors.toList());
     }
 
     public List<MovieInfo> getMoviesWithGenre(int number, Genre genre) {
-
         List<Movie> moviesWithGenre = currentRecommender.getMoviesWithGenre(number, genre);
 
-        return moviesWithGenre
-                .stream().map(m -> new MovieInfo(m.getId(), m.getTitle()))
-                .collect(Collectors.toList());
+        return moviesWithGenre.stream().map(m -> new MovieInfo(m.getId(), m.getImdbId())).collect(Collectors.toList());
     }
 
     public List<MovieInfo> getSimilarMovies(int number, MovieInfo movieInfo) {
-        Movie movie = currentRecommender.getMovieService().find(
-                movieInfo.getId());
+        Movie movie = currentRecommender.getMovieService().find(movieInfo.getId());
 
         return currentRecommender.getSimilarMovies(number, movie).stream()
-                .map(m -> new MovieInfo(m.getId(), m.getTitle()))
-                .collect(Collectors.toList());
+                .map(m -> new MovieInfo(m.getId(), m.getImdbId())).collect(Collectors.toList());
     }
 
 }
