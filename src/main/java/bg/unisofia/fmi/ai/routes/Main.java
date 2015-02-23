@@ -6,7 +6,6 @@ import static spark.SparkBase.staticFileLocation;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,13 +37,12 @@ public class Main {
 
         get("/", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
-            // List<MovieInfo> movies = fetcher.getFrontPageMovies(5);
-                List<MovieInfo> movies = new ArrayList<MovieInfo>();
-                attributes.put("genres", genres);
-                attributes.put("movies", movies);
+            List<MovieInfo> movies = fetcher.getFrontPageMovies(5);
+            attributes.put("genres", genres);
+            attributes.put("movies", movies);
 
-                return new ModelAndView(attributes, "index.ftl");
-            }, new FreeMarkerEngine());
+            return new ModelAndView(attributes, "index.ftl");
+        }, new FreeMarkerEngine());
 
         get("/genre/:genreId", (request, response) -> {
             String chosenGenreId = request.params(":genreId");
