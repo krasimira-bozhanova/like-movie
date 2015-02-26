@@ -2,6 +2,7 @@ package bg.unisofia.fmi.ai.dao;
 
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import bg.unisofia.fmi.ai.data.User;
@@ -25,6 +26,13 @@ public class UserService {
         return userDao.queryForId(userId);
     }
 
+    public User find(final String username, final String password) {
+        Map<String, Object> queryArguments = new HashMap<String, Object>();
+        queryArguments.put("username", username);
+        queryArguments.put("password", password);
+        return userDao.queryForFieldValues(queryArguments).get(0);
+    }
+
     public boolean isUsernameAvailable(final String username) {
         Map<String, Object> queryArguments = new HashMap<String, Object>();
         queryArguments.put("username", username);
@@ -41,12 +49,26 @@ public class UserService {
             throw new Exception("User with this username already exists");
         }
 
-        // User newUser = new User()
-        // save(new User)
+         User newUser = new User(username, password);
+         save(newUser);
 
         return true;
-
     }
+
+    public User login(String username, String password) throws Exception {
+
+        Map<String, Object> queryArguments = new HashMap<String, Object>();
+        queryArguments.put("username", username);
+        queryArguments.put("password", password);
+        List<User> user = userDao.queryForFieldValues(queryArguments);
+        if (user.isEmpty()) {
+            throw new Exception("Wrong username or password");
+        }
+
+        return user.get(0);
+    }
+
+
 
     public void save(final User user) {
         userDao.createOrUpdate(user);
