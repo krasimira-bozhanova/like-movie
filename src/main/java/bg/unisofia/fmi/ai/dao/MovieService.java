@@ -1,13 +1,15 @@
 package bg.unisofia.fmi.ai.dao;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import bg.unisofia.fmi.ai.data.Genre;
 import bg.unisofia.fmi.ai.data.Movie;
 import bg.unisofia.fmi.ai.data.MovieGenre;
+import bg.unisofia.fmi.ai.data.Rating;
 
+import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
@@ -15,13 +17,19 @@ import com.j256.ormlite.support.ConnectionSource;
 public class MovieService {
     private RuntimeExceptionDao<Movie, String> movieDao;
     private RuntimeExceptionDao<MovieGenre, Integer> movieGenreDao;
+    private RuntimeExceptionDao<Rating, String> ratingDao;
 
     public MovieService(ConnectionSource connectionSource) {
         try {
-            movieDao = RuntimeExceptionDao.createDao(connectionSource, Movie.class);
-            movieGenreDao = RuntimeExceptionDao.createDao(connectionSource, MovieGenre.class);
+            movieDao = RuntimeExceptionDao.createDao(connectionSource,
+                    Movie.class);
+            movieGenreDao = RuntimeExceptionDao.createDao(connectionSource,
+                    MovieGenre.class);
+            ratingDao = RuntimeExceptionDao.createDao(connectionSource,
+                    Rating.class);
         } catch (SQLException e) {
-            throw new RuntimeException("Problems initializing database objects", e);
+            throw new RuntimeException(
+                    "Problems initializing database objects", e);
         }
     }
 
@@ -45,18 +53,19 @@ public class MovieService {
     }
 
     public List<Movie> getRandomWithGenre(int limit, Genre genre) {
-        QueryBuilder<MovieGenre, Integer> movieGenreQb = movieGenreDao.queryBuilder();
-        QueryBuilder<Movie, String> movieQb = movieDao.queryBuilder();
-        List<MovieGenre> result = null;
-        try {
-            movieGenreQb.where().eq("genre_id", genre.getId());
-            movieGenreQb.join(movieQb);
-            result = movieGenreQb.query();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        List<Movie> result = new ArrayList<Movie>();
+
+        GenericRawResults<String[]> rawResults = movieDao
+                .queryRaw("select movie_id, imdbId, genre_id from movie m join (select * from moviegenre where genre_id="
+                        + genre.getId() + ") g on m.id=g.movie_id limit "
+         + limit);
+
+        for (String[] resultArray : rawResults) {
+            Movie movie = new Movie(resultArray[0], resultArray[1]);
+            result.add(movie);
         }
 
-        return result.stream().map(mg -> mg.getMovie()).collect(Collectors.toList());
+        return result;
     }
 
     public void save(final Movie movie) {

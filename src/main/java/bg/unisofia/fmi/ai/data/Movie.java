@@ -10,9 +10,6 @@ public class Movie implements Comparable<Movie> {
     private String id;
 
     @DatabaseField
-    private String title;
-
-    @DatabaseField
     private String imdbId;
 
     @ForeignCollectionField(eager = false)
@@ -24,18 +21,13 @@ public class Movie implements Comparable<Movie> {
     public Movie() {
     }
 
-    public Movie(final String id, final String title, final String imdbId) {
+    public Movie(final String id, final String imdbId) {
         this.id = id;
-        this.title = title;
         this.imdbId = imdbId;
     }
 
     public String getId() {
         return id;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public ForeignCollection<MovieGenre> getGenres() {
