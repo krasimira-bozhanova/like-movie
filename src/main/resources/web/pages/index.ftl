@@ -16,7 +16,7 @@
     <div class="header_bottom_right">
         <div class="content_top">
             <div class="heading">
-                <h3>Best rated</h3>
+                <h3>Recommended (${selectedGenre})</h3>
             </div>
         </div>
         <div class="section group">

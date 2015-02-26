@@ -53,10 +53,9 @@ public class DataImporter {
             lines.forEachOrdered(line -> {
                 final String[] lineParts = line.split("\\|");
                 final String movieId = lineParts[0];
-                final String title = lineParts[1];
                 final String imdbId = lineParts[4];
 
-                final Movie movie = new Movie(movieId, title, imdbId);
+                final Movie movie = new Movie(movieId, imdbId);
                 movieService.save(movie);
 
                 for (int i = 6; i < lineParts.length; i++) {

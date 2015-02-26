@@ -15,8 +15,8 @@
                 <div class="wrap">
                     <div class="account_desc">
                         <ul>
-                            <li><a href="register">Register</a></li>
-                            <li><a href="login">Login</a></li>
+                            <li><a href="/register">Register</a></li>
+                            <li><a href="/login">Login</a></li>
                         </ul>
                     </div>
                     <div class="clear"></div>
