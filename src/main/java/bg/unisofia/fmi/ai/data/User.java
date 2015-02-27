@@ -26,6 +26,12 @@ public class User implements Comparable<User> {
         this.id = Integer.valueOf(id);
     }
 
+    public User(final String id, final String username, final String password) {
+        this.id = Integer.valueOf(id);
+        this.username = username;
+        this.password = password;
+    }
+
     public User(final String username, final String password) {
         this.username = username;
         this.password = password;
@@ -35,14 +41,24 @@ public class User implements Comparable<User> {
         this.id = id;
     }
 
-
-
     public String getUsername() {
         return username;
     }
 
     public String getPassword() {
         return password;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setRatings(ForeignCollection<Rating> ratings) {
+        this.ratings = ratings;
     }
 
     public Integer getId() {

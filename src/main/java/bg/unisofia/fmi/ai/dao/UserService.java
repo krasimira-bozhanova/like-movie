@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import bg.unisofia.fmi.ai.data.User;
+import bg.unisofia.fmi.ai.db.util.DatasetsUtil;
 
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.support.ConnectionSource;
@@ -51,6 +52,7 @@ public class UserService {
 
          User newUser = new User(username, password);
          save(newUser);
+         DatasetsUtil.storeUser(newUser);
 
         return true;
     }

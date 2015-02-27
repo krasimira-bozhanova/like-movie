@@ -35,8 +35,7 @@ public class Main {
         List<Genre> genres = genreService.list();
 
         MovieFetcher fetcher = new MovieFetcher();
-
-        //User currentUser = UserService.getLoggedInUser();
+        User currentUser = new User("guest", "");
 
         get("/", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
@@ -44,6 +43,7 @@ public class Main {
             attributes.put("genres", genres);
             attributes.put("selectedGenre", "all");
             attributes.put("movies", movies);
+            attributes.put("user", currentUser);
 
             return new ModelAndView(attributes, "index.ftl");
         }, new FreeMarkerEngine());
@@ -59,6 +59,7 @@ public class Main {
             attributes.put("genres", genres);
             attributes.put("selectedGenre", genre.getName());
             attributes.put("movies", movies);
+            attributes.put("user", currentUser);
 
             return new ModelAndView(attributes, "index.ftl");
         }, new FreeMarkerEngine());
@@ -82,6 +83,7 @@ public class Main {
                 return null;
             }
             User registeredUser = userService.login(username, password);
+            System.out.println("Logged in: " + registeredUser.getUsername());
             response.redirect("/");
             return request;
         });
@@ -99,13 +101,23 @@ public class Main {
 
             User user = null;
 
-             try {
-                 user = userService.login(username, password);
-             } catch (Exception e) {
-                 response.redirect("/login");
-             }
-             response.redirect("/");
-             return request;
+            try {
+                user = userService.login(username, password);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                response.redirect("/login");
+                return request;
+            }
+            currentUser.setId(user.getId());
+            currentUser.setUsername(user.getUsername());
+            currentUser.setRatings(user.getRatings());
+
+            fetcher.Login(currentUser);
+
+            System.out.println(user.getId());
+            response.redirect("/");
+
+            return request;
         });
 
         get("/movies/:movieId", (request, response) -> {

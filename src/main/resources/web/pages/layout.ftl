@@ -1,7 +1,7 @@
 <#macro page>
 <!DOCTYPE HTML>
     <head>
-        <title>Free Movies Store Website Template | Home :: w3layouts</title>
+        <title>Movies recommender system - Like Movie | Home :: w3layouts</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
         <link href="/css/style.css" rel="stylesheet" type="text/css" media="all"/>
@@ -13,6 +13,11 @@
         <div class="header">
             <div class="headertop_desc">
                 <div class="wrap">
+                    <div class = "nav_list">
+                        <ul>
+                            <li><a href="/">Hello, ${user.getUsername()}</li>
+                        </ul>
+                    </div>
                     <div class="account_desc">
                         <ul>
                             <li><a href="/register">Register</a></li>
