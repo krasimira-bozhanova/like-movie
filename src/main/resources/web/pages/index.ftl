@@ -8,7 +8,7 @@
                <h3>Genres</h3>
                   <li><a href="/">All</a></li>
                   <#list genres as genre>
-                      <li><a href="/genre/${genre.id }">${genre.name }</a></li>
+                      <li><a href="/genre/${genre.id }">${genre.name}</a></li>
                   </#list>  
              </ul>
         </div>

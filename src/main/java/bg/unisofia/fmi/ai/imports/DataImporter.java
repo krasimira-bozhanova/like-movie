@@ -71,7 +71,13 @@ public class DataImporter {
             lines.forEachOrdered(line -> {
                 final String[] lineParts = line.split("\\|");
                 final String userId = lineParts[0];
-                userService.save(new User(userId));
+                User user = new User(userId);
+                if (lineParts.length > 5) {
+                    String username = lineParts[5];
+                    String password = lineParts[6];
+                    user = new User(userId, username, password);
+                }
+                userService.save(user);
             });
         }
 
