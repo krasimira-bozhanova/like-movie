@@ -14,12 +14,11 @@ import spark.ModelAndView;
 import bg.unisofia.fmi.ai.dao.GenreService;
 import bg.unisofia.fmi.ai.dao.UserService;
 import bg.unisofia.fmi.ai.data.Genre;
-import bg.unisofia.fmi.ai.data.Movie;
 import bg.unisofia.fmi.ai.data.User;
 import bg.unisofia.fmi.ai.db.util.DbUtil;
 import bg.unisofia.fmi.ai.imports.DataImporter;
-import bg.unisofia.fmi.ai.omdb.MovieFetcher;
-import bg.unisofia.fmi.ai.omdb.MovieInfo;
+import bg.unisofia.fmi.ai.movieinfo.MovieInfo;
+import bg.unisofia.fmi.ai.movieinfo.MovieInfoFetcher;
 import bg.unisofia.fmi.ai.template.FreeMarkerEngine;
 
 public class Main {
@@ -28,14 +27,15 @@ public class Main {
         staticFileLocation("/web");
 
         DataImporter.movielensIntoDbImporter("src/main/resources/datasets/");
+        User GUEST = new User("guest", "");
 
         GenreService genreService = new GenreService(DbUtil.getConnectionSource());
         UserService userService = new UserService(DbUtil.getConnectionSource());
 
         List<Genre> genres = genreService.list();
 
-        MovieFetcher fetcher = new MovieFetcher();
-        User currentUser = new User("guest", "");
+        MovieInfoFetcher fetcher = new MovieInfoFetcher();
+        User currentUser = GUEST;
 
         get("/", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
@@ -83,7 +83,7 @@ public class Main {
                 return null;
             }
             User registeredUser = userService.login(username, password);
-            System.out.println("Logged in: " + registeredUser.getUsername());
+            currentUser.setUser(registeredUser);
             response.redirect("/");
             return request;
         });
@@ -108,24 +108,24 @@ public class Main {
                 response.redirect("/login");
                 return request;
             }
-            currentUser.setId(user.getId());
-            currentUser.setUsername(user.getUsername());
-            currentUser.setRatings(user.getRatings());
 
-            fetcher.Login(currentUser);
+            currentUser.setUser(user);
+            fetcher.switchUser(currentUser);
+            response.redirect("/");
 
-            System.out.println(user.getId());
+            return request;
+        });
+
+        get("/logout", (request, response) -> {
+            currentUser.setUser(GUEST);
             response.redirect("/");
 
             return request;
         });
 
         get("/movies/:movieId", (request, response) -> {
-
             String chosenMovieId = request.params(":movieId");
-
-            Movie movie = fetcher.getRecommender().getMovieService().find(chosenMovieId);
-            MovieInfo movieInfo = new MovieInfo(chosenMovieId, movie.getImdbId());
+            MovieInfo movieInfo = fetcher.getMovie(chosenMovieId);
 
             Map<String, Object> attributes = new HashMap<>();
             attributes.put("genres", genres);
