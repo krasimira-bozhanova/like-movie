@@ -135,7 +135,10 @@ public class KNN implements Recommender {
         List<Movie> limitedMovies = new ArrayList<>();
         int i = 0;
         for (Movie movie : moviesToRecommend) {
+            if (i >= number) break;
+
             if (i++ < number) {
+                i++;
                 limitedMovies.add(movie);
             }
         }
@@ -148,11 +151,14 @@ public class KNN implements Recommender {
         int i = 0;
 
         for (Movie currentMovie : moviesToRecommend) {
+            if (i >= number) break;
+
             Collection<MovieGenre> intersectionGenres = new ArrayList<MovieGenre>(currentMovie.getGenres());
             intersectionGenres.retainAll(movie.getGenres());
 
-            if (!intersectionGenres.isEmpty() && i++ < number) {
+            if (!intersectionGenres.isEmpty()) {
                 limitedMovies.add(currentMovie);
+                i++;
             }
         }
         return limitedMovies;
@@ -163,8 +169,11 @@ public class KNN implements Recommender {
         List<Movie> limitedMovies = new ArrayList<>();
         int i = 0;
         for (Movie currentMovie : moviesToRecommend) {
-            if (currentMovie.getGenres().contains(genre) && i++ < number) {
+            if (i >= number) break;
+
+            if (currentMovie.getGenres().contains(genre)) {
                 limitedMovies.add(currentMovie);
+                i++;
             }
         }
         return limitedMovies;
