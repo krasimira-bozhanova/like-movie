@@ -8,7 +8,7 @@ import java.util.TreeSet;
 import org.junit.Before;
 import org.junit.Test;
 
-import bg.unisofia.fmi.ai.recommend.UserStatistics;
+import bg.unisofia.fmi.ai.recommend.stat.UserStatistics;
 
 public class UserStatisticsTest {
 
