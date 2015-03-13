@@ -22,47 +22,55 @@ import bg.unisofia.fmi.ai.movieinfo.MovieInfoFetcher;
 import bg.unisofia.fmi.ai.template.FreeMarkerEngine;
 
 public class Main {
+    public final static int SIMILAR_MOVIES_NUMBER = 4;
+    public final static int FRONT_PAGE_MOVIES = 10;
 
     public static void main(String[] args) throws IOException, SQLException {
         staticFileLocation("/web");
 
         DataImporter.movielensIntoDbImporter("src/main/resources/datasets/");
-        User GUEST = new User("guest", "");
 
-        GenreService genreService = new GenreService(DbUtil.getConnectionSource());
+        final User GUEST = new User("guest", "");
+        final User currentUser = new User();
+        currentUser.setUser(GUEST);
+
+        GenreService genreService = new GenreService(
+                DbUtil.getConnectionSource());
         UserService userService = new UserService(DbUtil.getConnectionSource());
 
         List<Genre> genres = genreService.list();
-
         MovieInfoFetcher fetcher = new MovieInfoFetcher();
-        User currentUser = GUEST;
 
-        get("/", (request, response) -> {
-            Map<String, Object> attributes = new HashMap<>();
-            List<MovieInfo> movies = fetcher.getFrontPageMovies(5);
-            attributes.put("genres", genres);
-            attributes.put("selectedGenre", "all");
-            attributes.put("movies", movies);
-            attributes.put("user", currentUser);
+        get("/",
+                (request, response) -> {
+                    Map<String, Object> attributes = new HashMap<>();
+                    List<MovieInfo> movies = fetcher
+                            .getFrontPageMovies(FRONT_PAGE_MOVIES);
+                    attributes.put("genres", genres);
+                    attributes.put("selectedGenre", "all");
+                    attributes.put("movies", movies);
+                    attributes.put("user", currentUser);
 
-            return new ModelAndView(attributes, "index.ftl");
-        }, new FreeMarkerEngine());
+                    return new ModelAndView(attributes, "index.ftl");
+                }, new FreeMarkerEngine());
 
-        get("/genre/:genreId", (request, response) -> {
-            String chosenGenreId = request.params(":genreId");
+        get("/genre/:genreId",
+                (request, response) -> {
+                    String chosenGenreId = request.params(":genreId");
+                    Genre genre = genreService.find(Integer
+                            .parseInt(chosenGenreId));
 
-            Genre genre = genreService.find(Integer.parseInt(chosenGenreId));
+                    Map<String, Object> attributes = new HashMap<>();
+                    List<MovieInfo> movies = fetcher.getMoviesWithGenre(
+                            FRONT_PAGE_MOVIES, genre);
+                    attributes.put("message", "Hello World!");
+                    attributes.put("genres", genres);
+                    attributes.put("selectedGenre", genre.getName());
+                    attributes.put("movies", movies);
+                    attributes.put("user", currentUser);
 
-            Map<String, Object> attributes = new HashMap<>();
-            List<MovieInfo> movies = fetcher.getMoviesWithGenre(5, genre);
-            attributes.put("message", "Hello World!");
-            attributes.put("genres", genres);
-            attributes.put("selectedGenre", genre.getName());
-            attributes.put("movies", movies);
-            attributes.put("user", currentUser);
-
-            return new ModelAndView(attributes, "index.ftl");
-        }, new FreeMarkerEngine());
+                    return new ModelAndView(attributes, "index.ftl");
+                }, new FreeMarkerEngine());
 
         get("/register", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
@@ -104,7 +112,6 @@ public class Main {
             try {
                 user = userService.login(username, password);
             } catch (Exception e) {
-                System.out.println(e.getMessage());
                 response.redirect("/login");
                 return request;
             }
@@ -123,17 +130,19 @@ public class Main {
             return request;
         });
 
-        get("/movies/:movieId", (request, response) -> {
-            String chosenMovieId = request.params(":movieId");
-            MovieInfo movieInfo = fetcher.getMovie(chosenMovieId);
+        get("/movies/:movieId",
+                (request, response) -> {
+                    String chosenMovieId = request.params(":movieId");
+                    MovieInfo movieInfo = fetcher.getMovie(chosenMovieId);
 
-            Map<String, Object> attributes = new HashMap<>();
-            attributes.put("genres", genres);
-            attributes.put("movie", movieInfo);
-            attributes.put("movies", fetcher.getSimilarMovies(4, movieInfo));
+                    Map<String, Object> attributes = new HashMap<>();
+                    attributes.put("genres", genres);
+                    attributes.put("movie", movieInfo);
+                    attributes.put("movies", fetcher.getSimilarMovies(
+                            SIMILAR_MOVIES_NUMBER, movieInfo));
 
-            return new ModelAndView(attributes, "preview.ftl");
-        }, new FreeMarkerEngine());
+                    return new ModelAndView(attributes, "preview.ftl");
+                }, new FreeMarkerEngine());
 
     }
 }
