@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import bg.unisofia.fmi.ai.data.Movie;
 import bg.unisofia.fmi.ai.data.User;
+import bg.unisofia.fmi.ai.recommend.algorithm.KNN;
 
 public class KNNTest {
 
