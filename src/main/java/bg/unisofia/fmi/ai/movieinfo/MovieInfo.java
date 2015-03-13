@@ -1,4 +1,4 @@
-package bg.unisofia.fmi.ai.omdb;
+package bg.unisofia.fmi.ai.movieinfo;
 
 import java.io.BufferedReader;
 import java.io.IOException;
