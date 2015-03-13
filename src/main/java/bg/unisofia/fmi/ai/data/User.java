@@ -49,18 +49,6 @@ public class User implements Comparable<User> {
         return password;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setRatings(ForeignCollection<Rating> ratings) {
-        this.ratings = ratings;
-    }
-
     public Integer getId() {
         return id;
     }
@@ -74,6 +62,14 @@ public class User implements Comparable<User> {
                 .findFirst();
 
         return rating.orElse(0d);
+    }
+
+    public void setUser(User user) {
+        this.id = user.getId();
+        this.username = user.getUsername();
+        this.ratings = user.getRatings();
+        this.password = user.getPassword();
+
     }
 
     public void rate(final Movie movie, final double rating) {
