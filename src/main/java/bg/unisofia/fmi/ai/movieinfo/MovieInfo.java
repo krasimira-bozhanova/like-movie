@@ -24,17 +24,17 @@ public class MovieInfo {
     private String country;
     private String awards;
     private String imdbRating;
-    private String id;
+    private int id;
     private String imdbId;
 
-    public MovieInfo(String id, String imdbId) {
+    public MovieInfo(int id, String imdbId) {
         this.id = id;
         this.imdbId = imdbId;
 
         retrieveData();
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
@@ -138,6 +138,7 @@ public class MovieInfo {
         JSONObject obj = new JSONObject(result);
 
         // TODO: create object in static method
+        System.out.println(obj + " " + this.imdbId);
         this.title = obj.getString("Title");
         this.year = obj.getString("Year");
         this.runtime = obj.getString("Runtime");

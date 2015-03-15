@@ -6,8 +6,8 @@ import com.j256.ormlite.field.ForeignCollectionField;
 
 public class Movie implements Comparable<Movie> {
 
-    @DatabaseField(id = true)
-    private String id;
+    @DatabaseField(generatedId = true, allowGeneratedIdInsert = true)
+    private Integer id;
 
     @DatabaseField
     private String imdbId;
@@ -21,12 +21,12 @@ public class Movie implements Comparable<Movie> {
     public Movie() {
     }
 
-    public Movie(final String id, final String imdbId) {
+    public Movie(final Integer id, final String imdbId) {
         this.id = id;
         this.imdbId = imdbId;
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
