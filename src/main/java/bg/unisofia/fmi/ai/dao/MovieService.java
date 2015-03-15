@@ -15,30 +15,26 @@ import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 
 public class MovieService {
-    private RuntimeExceptionDao<Movie, String> movieDao;
+    private RuntimeExceptionDao<Movie, Integer> movieDao;
     private RuntimeExceptionDao<MovieGenre, Integer> movieGenreDao;
     private RuntimeExceptionDao<Rating, String> ratingDao;
 
     public MovieService(ConnectionSource connectionSource) {
         try {
-            movieDao = RuntimeExceptionDao.createDao(connectionSource,
-                    Movie.class);
-            movieGenreDao = RuntimeExceptionDao.createDao(connectionSource,
-                    MovieGenre.class);
-            ratingDao = RuntimeExceptionDao.createDao(connectionSource,
-                    Rating.class);
+            movieDao = RuntimeExceptionDao.createDao(connectionSource, Movie.class);
+            movieGenreDao = RuntimeExceptionDao.createDao(connectionSource, MovieGenre.class);
+            ratingDao = RuntimeExceptionDao.createDao(connectionSource, Rating.class);
         } catch (SQLException e) {
-            throw new RuntimeException(
-                    "Problems initializing database objects", e);
+            throw new RuntimeException("Problems initializing database objects", e);
         }
     }
 
-    public Movie find(final String movieId) {
+    public Movie find(final int movieId) {
         return movieDao.queryForId(movieId);
     }
 
     public List<Movie> getRandom(long limit) {
-        QueryBuilder<Movie, String> queryBuilder = movieDao.queryBuilder();
+        QueryBuilder<Movie, Integer> queryBuilder = movieDao.queryBuilder();
         queryBuilder.orderByRaw("RANDOM()");
         queryBuilder.limit(limit);
         List<Movie> result = null;
@@ -57,11 +53,10 @@ public class MovieService {
 
         GenericRawResults<String[]> rawResults = movieDao
                 .queryRaw("select movie_id, imdbId, genre_id from movie m join (select * from moviegenre where genre_id="
-                        + genre.getId() + ") g on m.id=g.movie_id limit "
-         + limit);
+                        + genre.getId() + ") g on m.id=g.movie_id limit " + limit);
 
         for (String[] resultArray : rawResults) {
-            Movie movie = new Movie(resultArray[0], resultArray[1]);
+            Movie movie = new Movie(Integer.parseInt(resultArray[0]), resultArray[1]);
             result.add(movie);
         }
 

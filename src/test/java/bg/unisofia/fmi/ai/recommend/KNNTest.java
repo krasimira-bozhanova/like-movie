@@ -21,16 +21,16 @@ public class KNNTest {
     Movie movie4;
 
     public void beforeEachCreateUsers() {
-        user1 = new User("1");
-        user2 = new User("2");
-        user3 = new User("3");
+        user1 = new User(1);
+        user2 = new User(2);
+        user3 = new User(3);
     }
 
     public void beforeEachCreateMovies() {
-        movie1 = new Movie("1", "");
-        movie2 = new Movie("2", "");
-        movie3 = new Movie("3", "");
-        movie4 = new Movie("4", "");
+        movie1 = new Movie(1, "");
+        movie2 = new Movie(2, "");
+        movie3 = new Movie(3, "");
+        movie4 = new Movie(4, "");
     }
 
     @Before
@@ -49,7 +49,7 @@ public class KNNTest {
 
     @Test
     public void testGetClosestNeighbours() {
-        User newUser = new User("4");
+        User newUser = new User(4);
         KNN newUserProblem = new KNN(newUser, 1);
         assertThat(newUserProblem.getClosestNeighbours()).isEmpty();
 
@@ -65,7 +65,7 @@ public class KNNTest {
 
     @Test
     public void testCalculateSimilarity() {
-        User newUser = new User("4");
+        User newUser = new User(4);
         KNN newUserProblem = new KNN(newUser, 1);
         assertThat(newUserProblem.calculateSimilatiry(user1)).isEqualTo(0);
         assertThat(newUserProblem.calculateSimilatiry(user2)).isEqualTo(0);
@@ -82,7 +82,7 @@ public class KNNTest {
 
     @Test
     public void testGetMoviesToRecommend() {
-        User newUser = new User("4");
+        User newUser = new User(4);
         newUser.rate(movie1, 2);
 
         KNN newUserProblem = new KNN(newUser, 2);
@@ -92,7 +92,7 @@ public class KNNTest {
 
     @Test
     public void testGetExpectedRating() {
-        User newUser = new User("4");
+        User newUser = new User(4);
         newUser.rate(movie1, 2);
 
         KNN newUserProblem = new KNN(newUser, 2);

@@ -13,10 +13,10 @@ public class UserTest {
 
     @Before
     public void beforeEachSetRating() {
-        user1 = new User("1");
-        movie1 = new Movie("1", "");
-        movie2 = new Movie("2", "");
-        movie3 = new Movie("3", "");
+        user1 = new User(1);
+        movie1 = new Movie(1, "");
+        movie2 = new Movie(2, "");
+        movie3 = new Movie(3, "");
     }
 
     @Test

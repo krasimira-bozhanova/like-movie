@@ -6,14 +6,18 @@ public class Genre {
     @DatabaseField(id = true)
     private int id;
 
-    @DatabaseField
+    @DatabaseField(unique = true)
     private String name;
 
     public Genre() {
     }
 
-    public Genre(final int id, String name) {
+    public Genre(final int id, final String name) {
         this.id = id;
+        this.name = name;
+    }
+
+    public Genre(final String name) {
         this.name = name;
     }
 

@@ -5,6 +5,8 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import bg.unisofia.fmi.ai.dao.GenreService;
@@ -24,7 +26,7 @@ import com.j256.ormlite.table.TableUtils;
 
 public class DataImporter {
 
-    public static void movielensIntoDbImporter(final String datasetPath) throws IOException, SQLException {
+    public static void movielensImporter(final String datasetPath) throws IOException, SQLException {
         final ConnectionSource connectionSource = DbUtil.getConnectionSource();
 
         final MovieService movieService = new MovieService(connectionSource);
@@ -52,7 +54,7 @@ public class DataImporter {
         try (Stream<String> lines = Files.lines(Paths.get(datasetPath, "u.item.imdb"), Charset.forName("UTF-8"))) {
             lines.forEachOrdered(line -> {
                 final String[] lineParts = line.split("\\|");
-                final String movieId = lineParts[0];
+                final int movieId = Integer.parseInt(lineParts[0]);
                 final String imdbId = lineParts[4];
 
                 final Movie movie = new Movie(movieId, imdbId);
@@ -70,7 +72,7 @@ public class DataImporter {
         try (Stream<String> lines = Files.lines(Paths.get(datasetPath, "u.user"), Charset.defaultCharset())) {
             lines.forEachOrdered(line -> {
                 final String[] lineParts = line.split("\\|");
-                final String userId = lineParts[0];
+                final int userId = Integer.parseInt(lineParts[0]);
                 User user = new User(userId);
                 if (lineParts.length > 5) {
                     String username = lineParts[5];
@@ -86,11 +88,58 @@ public class DataImporter {
                 final String[] lineParts = line.split("\t");
 
                 final User u = userService.find(lineParts[0]);
-                final Movie m = movieService.find(lineParts[1]);
+                final Movie m = movieService.find(Integer.parseInt(lineParts[1]));
                 final double rating = Double.parseDouble(lineParts[2]);
 
                 ratingService.save(new Rating(u, m, rating));
             });
         }
+    }
+
+    public static void customWikiExtractedFilesImporter(final String filesPath) throws SQLException, IOException {
+        final ConnectionSource connectionSource = DbUtil.getConnectionSource();
+
+        final MovieService movieService = new MovieService(connectionSource);
+        final UserService userService = new UserService(connectionSource);
+        final GenreService genreService = new GenreService(connectionSource);
+        final RatingService ratingService = new RatingService(connectionSource);
+        final MovieGenreService movieGenreService = new MovieGenreService(connectionSource);
+
+        TableUtils.createTableIfNotExists(connectionSource, User.class);
+        TableUtils.createTableIfNotExists(connectionSource, Movie.class);
+        TableUtils.createTableIfNotExists(connectionSource, Genre.class);
+        TableUtils.createTableIfNotExists(connectionSource, Rating.class);
+        TableUtils.createTableIfNotExists(connectionSource, MovieGenre.class);
+
+        try (Stream<String> lines = Files.lines(Paths.get(filesPath, "movies.data"), Charset.defaultCharset())) {
+            lines.forEachOrdered(line -> {
+                final String[] lineParts = line.split(":", 3);
+                final int pageId = Integer.parseInt(lineParts[0]);
+                final String imdbId = lineParts[1];
+                final String[] categories = lineParts[2].split(",");
+
+                // save movie
+                final Movie movie = new Movie(pageId, imdbId);
+                movieService.save(movie);
+
+                // save its categories
+                for (String categoryName : categories) {
+                    final String normalizedName = categoryName.substring(1, categoryName.length() - 1);
+                    final Optional<Genre> genre = genreService.findByName(normalizedName);
+
+                    final Genre g = genre.orElseGet(new Supplier<Genre>() {
+                        @Override
+                        public Genre get() {
+                            final Genre g = new Genre(normalizedName);
+                            genreService.save(g);
+                            return g;
+                        }
+                    });
+
+                    movieGenreService.save(new MovieGenre(movie, g));
+                }
+            });
+        }
+
     }
 }

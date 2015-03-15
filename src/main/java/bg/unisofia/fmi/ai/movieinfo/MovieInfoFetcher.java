@@ -29,7 +29,7 @@ public class MovieInfoFetcher {
         movieFetcher.switchUser(user);
     }
 
-    public MovieInfo getMovie(String id) {
+    public MovieInfo getMovie(int id) {
         return new MovieInfo(id, movieFetcher.findMovie(id).getImdbId());
     }
 
@@ -37,27 +37,20 @@ public class MovieInfoFetcher {
 
         List<Movie> topMovies = movieFetcher.getTopMovies(number);
 
-        return topMovies.stream()
-                .map(m -> new MovieInfo(m.getId(), m.getImdbId()))
-                .collect(Collectors.toList());
+        return topMovies.stream().map(m -> new MovieInfo(m.getId(), m.getImdbId())).collect(Collectors.toList());
     }
 
     public List<MovieInfo> getMoviesWithGenre(int number, Genre genre) {
-        List<Movie> moviesWithGenre = movieFetcher.getMoviesWithGenre(number,
-                genre);
+        List<Movie> moviesWithGenre = movieFetcher.getMoviesWithGenre(number, genre);
 
-        return moviesWithGenre.stream()
-                .map(m -> new MovieInfo(m.getId(), m.getImdbId()))
-                .collect(Collectors.toList());
+        return moviesWithGenre.stream().map(m -> new MovieInfo(m.getId(), m.getImdbId())).collect(Collectors.toList());
     }
 
     public List<MovieInfo> getSimilarMovies(int number, MovieInfo movieInfo) {
         Movie movie = movieFetcher.findMovie(movieInfo.getId());
         List<Movie> similarMovies = movieFetcher.getSimilarMovies(number, movie);
 
-        return similarMovies.stream()
-                .map(m -> new MovieInfo(m.getId(), m.getImdbId()))
-                .collect(Collectors.toList());
+        return similarMovies.stream().map(m -> new MovieInfo(m.getId(), m.getImdbId())).collect(Collectors.toList());
     }
 
     private class MovieFetcher implements Recommender {
@@ -103,13 +96,12 @@ public class MovieInfoFetcher {
         @Override
         public List<Movie> getMoviesWithGenre(int number, Genre genre) {
             List<Movie> primeResult = primeRecommender.getMoviesWithGenre(number, genre);
-            List<Movie> secondResult = secondRecommender.
-                    getMoviesWithGenre(number - primeResult.size(), genre);
+            List<Movie> secondResult = secondRecommender.getMoviesWithGenre(number - primeResult.size(), genre);
             primeResult.addAll(secondResult);
             return primeResult;
         }
 
-        public Movie findMovie(String id) {
+        public Movie findMovie(int id) {
             return getMovieService().find(id);
         }
 

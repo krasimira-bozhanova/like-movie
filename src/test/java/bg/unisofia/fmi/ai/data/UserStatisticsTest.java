@@ -22,16 +22,16 @@ public class UserStatisticsTest {
     Movie movie4;
 
     public void beforeEachCreateUsers() {
-        user1 = new User("1");
-        user2 = new User("2");
-        user3 = new User("3");
+        user1 = new User(1);
+        user2 = new User(2);
+        user3 = new User(3);
     }
 
     public void beforeEachCreateMovies() {
-        movie1 = new Movie("1", "");
-        movie2 = new Movie("2", "");
-        movie3 = new Movie("3", "");
-        movie4 = new Movie("4", "");
+        movie1 = new Movie(1, "");
+        movie2 = new Movie(2, "");
+        movie3 = new Movie(3, "");
+        movie4 = new Movie(4, "");
     }
 
     @Before

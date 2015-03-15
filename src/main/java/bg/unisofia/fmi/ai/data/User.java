@@ -7,7 +7,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 
 public class User implements Comparable<User> {
-    @DatabaseField(generatedId = true, allowGeneratedIdInsert=true)
+    @DatabaseField(generatedId = true, allowGeneratedIdInsert = true)
     private Integer id;
 
     @DatabaseField
@@ -22,12 +22,8 @@ public class User implements Comparable<User> {
     public User() {
     }
 
-    public User(final String id) {
-        this.id = Integer.valueOf(id);
-    }
-
-    public User(final String id, final String username, final String password) {
-        this.id = Integer.valueOf(id);
+    public User(final int id, final String username, final String password) {
+        this.id = id;
         this.username = username;
         this.password = password;
     }
