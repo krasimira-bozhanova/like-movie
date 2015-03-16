@@ -36,7 +36,7 @@
                     <div class="header_top_right">
                         <div class="search_box">
                             <form>
-                                <input id="movies-search" type="text" value="Search movies" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Search';}"><input type="submit" value="">
+                                <input id="movies-search" type="text" /><input type="submit" value=""/>
                             </form>
                         </div>
                         <div class="clear"></div>
@@ -62,7 +62,7 @@
 				    transformResult: function(response) {
 				        return {
 				            suggestions: $.map(JSON.parse(response), function(dataItem) {
-				                return { value: (dataItem.id).toString(), data: dataItem.title };
+				                return { value: dataItem.title, data: (dataItem.id).toString() };
 				            })
 				        };
 				    }

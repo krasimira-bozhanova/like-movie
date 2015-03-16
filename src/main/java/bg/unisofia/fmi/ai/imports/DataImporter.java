@@ -55,9 +55,10 @@ public class DataImporter {
             lines.forEachOrdered(line -> {
                 final String[] lineParts = line.split("\\|");
                 final int movieId = Integer.parseInt(lineParts[0]);
+                final String title = lineParts[1];
                 final String imdbId = lineParts[4];
 
-                final Movie movie = new Movie(movieId, imdbId);
+                final Movie movie = new Movie(movieId, title, imdbId);
                 movieService.save(movie);
 
                 for (int i = 6; i < lineParts.length; i++) {
@@ -119,7 +120,8 @@ public class DataImporter {
                 final String[] categories = lineParts[2].split(",");
 
                 // save movie
-                final Movie movie = new Movie(pageId, imdbId);
+                // TODO add movie title
+                final Movie movie = new Movie(pageId, null, imdbId);
                 movieService.save(movie);
 
                 // save its categories

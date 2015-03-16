@@ -12,6 +12,7 @@ import bg.unisofia.fmi.ai.data.Rating;
 import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.SelectArg;
 import com.j256.ormlite.support.ConnectionSource;
 
 public class MovieService {
@@ -49,14 +50,14 @@ public class MovieService {
     }
 
     public List<Movie> getRandomWithGenre(int limit, Genre genre) {
-        List<Movie> result = new ArrayList<Movie>();
+        final List<Movie> result = new ArrayList<Movie>();
 
         GenericRawResults<String[]> rawResults = movieDao
-                .queryRaw("select movie_id, imdbId, genre_id from movie m join (select * from moviegenre where genre_id="
+                .queryRaw("select movie_id, title, imdbId, genre_id from movie m join (select * from moviegenre where genre_id="
                         + genre.getId() + ") g on m.id=g.movie_id limit " + limit);
 
         for (String[] resultArray : rawResults) {
-            Movie movie = new Movie(Integer.parseInt(resultArray[0]), resultArray[1]);
+            Movie movie = new Movie(Integer.parseInt(resultArray[0]), resultArray[1], resultArray[2]);
             result.add(movie);
         }
 
@@ -71,4 +72,14 @@ public class MovieService {
         movieDao.refresh(movie);
     }
 
+    public List<Movie> autocompleteSearch(final String searchText) {
+        try {
+            return movieDao.query(movieDao.queryBuilder().limit(10l).where()
+                    .like("title", new SelectArg("%" + searchText + "%")).prepare());
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+            return new ArrayList<>();
+        }
+    }
 }
