@@ -16,7 +16,7 @@
                 <div class="wrap">
                     <div class = "nav_list">
                         <ul>
-                            <li><a href="/">Hello, ${user.getUsername()}</li>
+                            <li><a href="/">Hello, ${user.username }</a></li>
                         </ul>
                     </div>
                     <div class="account_desc">

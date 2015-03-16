@@ -36,6 +36,9 @@ body {
 	font-family: Arial, Helvetica, sans-serif;
 	background: #FFF;
 }
+.main {
+	margin-bottom: 30px;
+}
 .register {
 	padding-top: 20px;
 	font-size: 20px;
@@ -497,11 +500,11 @@ body {
 	margin: 0% 0 0% 2.6%;
 }
 .product-details{
-	margin:30px 0;
+	margin:20px 0;
 }
 .span_1_of_2 {
-	width: 67.1%;
-	padding: 1.5%;
+	width: 68.6%;
+	padding: 1.5% 1.5% 0 0;
 }
 .images_3_of_2 {
 	width: 44.2%;
@@ -512,8 +515,8 @@ body {
 	width: 53.2%;
 }
 .span_3_of_1 {
-	width: 25.2%;
-	padding: 1.5%;
+	width: 26.7%;
+	padding: 1.5% 0 0 1.5%;
 }
 .images_3_of_2  img {
 	max-width: 100%;
@@ -666,40 +669,15 @@ body {
 	float:left;
 	width:55%;
 	margin-left:5%;
-	padding:10px;
+	padding:1%;
 }
 .movie_desc h3 a{
 	color: #888;
 	font-family: 'ambleregular';
 	font-size:1.2em;
 }
-.movie_desc p{
-	font-size:1em;
-	font-family: 'ambleregular';
-	color:#383838;
-	padding:8px 0;
-}
-.movie_desc p span{
-	text-decoration:line-through;
-	color:#888;
-}
-.movie_desc span a{
-	font-size:0.8em;
-	display:inline-block;
-	padding:6px 10px;
-	font-family: 'ambleregular';
-	background:#FC7D01;
-	color: #FFF;
-	text-decoration: none;
-	outline: 0;
-	-webkit-transition: all 0.5s ease-in-out;
-	-moz-transition: all 0.5s ease-in-out;
-	-o-transition: all 0.5s ease-in-out;
-	transition: all 0.5s ease-in-out;
-}
-.movie_desc span a:hover{
-	 text-shadow: 0px 0px 1px #000;
-	  background:#292929;
+.movie_desc span {
+	font-size: 0.9em;
 }
 
 # Autocomplete box
