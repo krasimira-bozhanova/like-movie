@@ -16,13 +16,17 @@
                 <div class="wrap">
                     <div class = "nav_list">
                         <ul>
-                            <li><a href="/">Hello, ${user.username }</a></li>
+                            <li><a href="/">Hello, ${username!"guest" }</a></li>
                         </ul>
                     </div>
                     <div class="account_desc">
                         <ul>
-                            <li><a href="/register">Register</a></li>
-                            <li><a href="/login">Login</a></li>
+                        	<#if !username?has_content>
+                            	<li><a href="/register">Register</a></li>
+                            	<li><a href="/login">Login</a></li>
+                            <#else>
+                            	<li><a href="/logout">Logout</a></li>
+                            </#if>
                         </ul>
                     </div>
                     <div class="clear"></div>
