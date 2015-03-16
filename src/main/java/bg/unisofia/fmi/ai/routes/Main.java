@@ -6,6 +6,7 @@ import static spark.SparkBase.staticFileLocation;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,11 +15,13 @@ import spark.ModelAndView;
 import bg.unisofia.fmi.ai.dao.GenreService;
 import bg.unisofia.fmi.ai.dao.UserService;
 import bg.unisofia.fmi.ai.data.Genre;
+import bg.unisofia.fmi.ai.data.Movie;
 import bg.unisofia.fmi.ai.data.User;
 import bg.unisofia.fmi.ai.db.util.DbUtil;
 import bg.unisofia.fmi.ai.movieinfo.MovieInfo;
 import bg.unisofia.fmi.ai.movieinfo.MovieInfoFetcher;
 import bg.unisofia.fmi.ai.template.FreeMarkerEngine;
+import bg.unisofia.fmi.ai.transformers.JsonTransformer;
 
 public class Main {
     public final static int SIMILAR_MOVIES_NUMBER = 4;
@@ -135,6 +138,11 @@ public class Main {
 
             return new ModelAndView(attributes, "preview.ftl");
         }, new FreeMarkerEngine());
+
+        get("/movies", (request, response) -> {
+            // TODO actually implement this method once movies have titles
+                return Arrays.asList(new Movie(12345, "12345"));
+            }, new JsonTransformer());
 
     }
 }
