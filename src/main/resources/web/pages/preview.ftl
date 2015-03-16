@@ -15,18 +15,18 @@
                     <img src="${movie.poster }" alt="" />
                 </div>
                 <div class="desc span_3_of_2">
-                    <h2>${movie.getTitle()}</h2>
+                    <h2>${movie.title }</h2>
                     <div class="available">
                         <ul>
-                            <li><span>Year:</span> &nbsp; ${movie.getYear()} </li>
-                            <li><span>Duration:</span>&nbsp; ${movie.getRuntime()}</li>
-                            <li><span>Genre:</span>&nbsp; ${movie.getGenre()}</li>
-                            <li><span>Director:</span>&nbsp; ${movie.getDirector()}</li>
-                            <li><span>Writer:</span>&nbsp; ${movie.getWriter()}</li>
-                            <li><span>Actors:</span>&nbsp; ${movie.getActors()}</li>
-                            <li><span>Language:</span>&nbsp; ${movie.getLanguage()}</li>
-                            <li><span>Country:</span>&nbsp; ${movie.getCountry()}</li>
-                            <li><span>IMDB rating:</span>&nbsp; ${movie.getImdbRating()}</li>
+                            <li><span>Year:</span> &nbsp; ${movie.year } </li>
+                            <li><span>Duration:</span>&nbsp; ${movie.runtime }</li>
+                            <li><span>Genre:</span>&nbsp; ${movie.genre }</li>
+                            <li><span>Director:</span>&nbsp; ${movie.director }</li>
+                            <li><span>Writer:</span>&nbsp; ${movie.writer }</li>
+                            <li><span>Actors:</span>&nbsp; ${movie.actors }</li>
+                            <li><span>Language:</span>&nbsp; ${movie.language }</li>
+                            <li><span>Country:</span>&nbsp; ${movie.country }</li>
+                            <li><span>IMDB rating:</span>&nbsp; ${movie.imdbRating }</li>
                         </ul>
                     </div>
                     <div class="share-desc">
@@ -51,7 +51,7 @@
             </div>
             <div class="product_desc">  
                 <h2>Description :</h2>
-                <p>${movie.getPlot()}</p>
+                <p>${movie.plot }</p>
             </div>
         </div>
         <div class="rightsidebar span_3_of_1 sidebar">
@@ -59,11 +59,11 @@
             <#list movies as m>
                <div class="special_movies">
                 <div class="movie_poster">
-                    <a href="${m.getId()}"><img src="${m.getImage()}" alt="" /></a>
+                    <a href="${m.id }"><img src="${m.poster }" alt="" /></a>
                 </div>
                 
                 <div class="movie_desc">
-                    <h3><a href="${m.getId()}">${m.getTitle()}</a></h3>
+                    <h3><a href="${m.id }">${m.title }</a></h3>
                     <span><a href="#">Add to Cart</a></span>
                 </div>
                 <div class="clear"></div>
