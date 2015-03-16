@@ -137,6 +137,7 @@ public class Main {
             Map<String, Object> attributes = new HashMap<>();
             attributes.put("genres", genres);
             attributes.put("movie", movieInfo);
+            attributes.put("user", currentUser);
             attributes.put("movies", fetcher.getSimilarMovies(SIMILAR_MOVIES_NUMBER, movieInfo));
 
             return new ModelAndView(attributes, "preview.ftl");
