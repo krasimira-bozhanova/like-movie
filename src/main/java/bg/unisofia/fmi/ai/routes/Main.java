@@ -28,31 +28,29 @@ public class Main {
     public final static int SIMILAR_MOVIES_NUMBER = 4;
     public final static int FRONT_PAGE_MOVIES = 10;
 
+    private static final String USERNAME_ATTR = "username";
+    private static final String USERID_ATTR = "userId";
+
     public static void main(String[] args) throws IOException, SQLException {
         staticFileLocation("/web");
 
         // DataImporter.movielensImporter("src/main/resources/datasets/movielens/");
         // DataImporter.customWikiExtractedFilesImporter("src/main/resources/datasets/wiki/");
 
-        final User GUEST = new User("guest", "");
-        final User currentUser = new User();
-        currentUser.setUser(GUEST);
-
         final ConnectionSource connection = DbUtil.getConnectionSource();
         final GenreService genreService = new GenreService(connection);
         final UserService userService = new UserService(connection);
         final MovieService movieService = new MovieService(connection);
 
-        List<Genre> genres = genreService.list();
         MovieInfoFetcher fetcher = new MovieInfoFetcher();
 
         get("/", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
             List<MovieInfo> movies = fetcher.getFrontPageMovies(FRONT_PAGE_MOVIES);
-            attributes.put("genres", genres);
+            attributes.put("genres", genreService.list());
             attributes.put("selectedGenre", "all");
             attributes.put("movies", movies);
-            attributes.put("user", currentUser);
+            attributes.put("username", request.session().attribute(USERNAME_ATTR));
 
             return new ModelAndView(attributes, "index.ftl");
         }, new FreeMarkerEngine());
@@ -64,10 +62,10 @@ public class Main {
             Map<String, Object> attributes = new HashMap<>();
             List<MovieInfo> movies = fetcher.getMoviesWithGenre(FRONT_PAGE_MOVIES, genre);
             attributes.put("message", "Hello World!");
-            attributes.put("genres", genres);
+            attributes.put("genres", genreService.list());
             attributes.put("selectedGenre", genre.getName());
             attributes.put("movies", movies);
-            attributes.put("user", currentUser);
+            attributes.put("username", request.session().attribute(USERNAME_ATTR));
 
             return new ModelAndView(attributes, "index.ftl");
         }, new FreeMarkerEngine());
@@ -90,8 +88,9 @@ public class Main {
                 response.redirect("/register");
                 return null;
             }
-            User registeredUser = userService.login(username, password);
-            currentUser.setUser(registeredUser);
+            userService.login(username, password);
+            request.session().attribute(USERNAME_ATTR, username);
+
             response.redirect("/");
             return request;
         });
@@ -99,32 +98,32 @@ public class Main {
         get("/login", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
             attributes.put("message", "Login");
+
             return new ModelAndView(attributes, "login.ftl");
 
         }, new FreeMarkerEngine());
 
         post("/login", (request, response) -> {
-            String username = request.queryParams("username");
-            String password = request.queryParams("password");
+            final String username = request.queryParams("username");
+            final String password = request.queryParams("password");
 
-            User user = null;
-
+            User loggedUser;
             try {
-                user = userService.login(username, password);
+                loggedUser = userService.login(username, password);
             } catch (Exception e) {
                 response.redirect("/login");
                 return request;
             }
 
-            currentUser.setUser(user);
-            fetcher.switchUser(currentUser);
-            response.redirect("/");
+            request.session().attribute(USERID_ATTR, loggedUser.getId());
+            request.session().attribute(USERNAME_ATTR, username);
 
-            return request;
+            response.redirect("/");
+            return null;
         });
 
         get("/logout", (request, response) -> {
-            currentUser.setUser(GUEST);
+            request.session().removeAttribute("username");
             response.redirect("/");
 
             return request;
@@ -135,9 +134,9 @@ public class Main {
             MovieInfo movieInfo = fetcher.getMovie(chosenMovieId);
 
             Map<String, Object> attributes = new HashMap<>();
-            attributes.put("genres", genres);
+            attributes.put("genres", genreService.list());
             attributes.put("movie", movieInfo);
-            attributes.put("user", currentUser);
+            attributes.put("username", request.session().attribute(USERNAME_ATTR));
             attributes.put("movies", fetcher.getSimilarMovies(SIMILAR_MOVIES_NUMBER, movieInfo));
 
             return new ModelAndView(attributes, "preview.ftl");
