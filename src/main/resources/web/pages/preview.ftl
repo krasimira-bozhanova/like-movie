@@ -2,17 +2,11 @@
 
 <@l.page>
 
-    <div class="content_top">
-        <div class="back-links">
-        	<p><a href="index.html">Home</a> &gt;&gt;&gt;&gt; <a href="#" class="active">English</a></p>
-        </div>
-        <div class="clear"></div>
-    </div>
     <div class="section group">
         <div class="cont-desc span_1_of_2">
             <div class="product-details">
                 <div class="grid images_3_of_2">
-                    <img src="${movie.poster }" alt="" />
+                    <img src="${movie.poster }" alt="${movie.title }" />
                 </div>
                 <div class="desc span_3_of_2">
                     <h2>${movie.title }</h2>
@@ -64,9 +58,10 @@
                 
                 <div class="movie_desc">
                     <h3><a href="${m.id }">${m.title }</a></h3>
-                    <span><a href="#">Add to Cart</a></span>
+                    <span>${m.plot[0..70]}...</span>
                 </div>
                 <div class="clear"></div>
+              </div>
             </#list>
         </div>
     </div>
