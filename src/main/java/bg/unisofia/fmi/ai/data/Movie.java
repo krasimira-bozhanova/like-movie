@@ -1,16 +1,22 @@
 package bg.unisofia.fmi.ai.data;
 
+import com.google.gson.annotations.Expose;
 import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 
 public class Movie implements Comparable<Movie> {
 
+    @Expose
     @DatabaseField(generatedId = true, allowGeneratedIdInsert = true)
     private Integer id;
 
     @DatabaseField
     private String imdbId;
+
+    @Expose
+    @DatabaseField
+    private String title;
 
     @ForeignCollectionField(eager = false)
     private ForeignCollection<Rating> ratings;
@@ -21,13 +27,22 @@ public class Movie implements Comparable<Movie> {
     public Movie() {
     }
 
-    public Movie(final Integer id, final String imdbId) {
+    public Movie(final Integer id, final String title, final String imdbId) {
         this.id = id;
         this.imdbId = imdbId;
+        this.title = title;
     }
 
     public Integer getId() {
         return id;
+    }
+
+    public String getImdbId() {
+        return imdbId;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public ForeignCollection<MovieGenre> getGenres() {
@@ -36,10 +51,6 @@ public class Movie implements Comparable<Movie> {
 
     public ForeignCollection<Rating> getRatings() {
         return ratings;
-    }
-
-    public String getImdbId() {
-        return imdbId;
     }
 
     @Override

@@ -12,7 +12,7 @@ public class DbUtil {
 
     public static ConnectionSource getConnectionSource() {
         try {
-            return new JdbcConnectionSource("jdbc:h2:file:/tmp/movies.db;DB_CLOSE_DELAY=-1");
+            return new JdbcConnectionSource("jdbc:h2:file:/tmp/movies.db;IGNORECASE=TRUE;DB_CLOSE_DELAY=-1");
         } catch (SQLException e) {
             throw new RuntimeException("Problems initializing database objects", e);
         }

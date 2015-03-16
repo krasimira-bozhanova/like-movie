@@ -3,10 +3,11 @@ package bg.unisofia.fmi.ai.transformers;
 import spark.ResponseTransformer;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class JsonTransformer implements ResponseTransformer {
 
-    private Gson gson = new Gson();
+    private final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
     @Override
     public String render(Object model) {

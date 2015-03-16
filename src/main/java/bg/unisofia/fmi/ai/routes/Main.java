@@ -6,22 +6,23 @@ import static spark.SparkBase.staticFileLocation;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import spark.ModelAndView;
 import bg.unisofia.fmi.ai.dao.GenreService;
+import bg.unisofia.fmi.ai.dao.MovieService;
 import bg.unisofia.fmi.ai.dao.UserService;
 import bg.unisofia.fmi.ai.data.Genre;
-import bg.unisofia.fmi.ai.data.Movie;
 import bg.unisofia.fmi.ai.data.User;
 import bg.unisofia.fmi.ai.db.util.DbUtil;
 import bg.unisofia.fmi.ai.movieinfo.MovieInfo;
 import bg.unisofia.fmi.ai.movieinfo.MovieInfoFetcher;
 import bg.unisofia.fmi.ai.template.FreeMarkerEngine;
 import bg.unisofia.fmi.ai.transformers.JsonTransformer;
+
+import com.j256.ormlite.support.ConnectionSource;
 
 public class Main {
     public final static int SIMILAR_MOVIES_NUMBER = 4;
@@ -37,8 +38,10 @@ public class Main {
         final User currentUser = new User();
         currentUser.setUser(GUEST);
 
-        GenreService genreService = new GenreService(DbUtil.getConnectionSource());
-        UserService userService = new UserService(DbUtil.getConnectionSource());
+        final ConnectionSource connection = DbUtil.getConnectionSource();
+        final GenreService genreService = new GenreService(connection);
+        final UserService userService = new UserService(connection);
+        final MovieService movieService = new MovieService(connection);
 
         List<Genre> genres = genreService.list();
         MovieInfoFetcher fetcher = new MovieInfoFetcher();
@@ -140,9 +143,10 @@ public class Main {
         }, new FreeMarkerEngine());
 
         get("/movies", (request, response) -> {
-            // TODO actually implement this method once movies have titles
-                return Arrays.asList(new Movie(12345, "12345"));
-            }, new JsonTransformer());
+            final String searchText = request.queryParams("name");
+
+            return movieService.autocompleteSearch(searchText);
+        }, new JsonTransformer());
 
     }
 }

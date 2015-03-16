@@ -28,10 +28,10 @@ public class UserStatisticsTest {
     }
 
     public void beforeEachCreateMovies() {
-        movie1 = new Movie(1, "");
-        movie2 = new Movie(2, "");
-        movie3 = new Movie(3, "");
-        movie4 = new Movie(4, "");
+        movie1 = new Movie(1, null, null);
+        movie2 = new Movie(2, null, null);
+        movie3 = new Movie(3, null, null);
+        movie4 = new Movie(4, null, null);
     }
 
     @Before
