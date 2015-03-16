@@ -214,7 +214,7 @@ body {
 }
 .header_bottom_left{
 	float:left;
-	width:25%;
+	width:18%;
 }
 .categories{
 	border:1px solid #EEE;
@@ -249,8 +249,8 @@ body {
 }
 .header_bottom_right{
 	float:left;
-	width:74%;
-	padding-left:1%;
+	width:80%;
+	padding-left:2%;
 }
 /***** Content *****/
 .content {
@@ -288,15 +288,28 @@ body {
 	margin-left: 0;
 }
 .images_1_of_5 {
-	width: 15.72%;
-	padding:1.5%; 
+	width: 16.72%;
+	padding:1%; 
 	text-align: center;
 	position: relative;
+	max-height: 190px;
+	overflow: hidden;
 }
 .images_1_of_5  img {
 	max-width: 100%;
+	min-height: 190px;
 }
-.images_1_of_5  h2  a{
+.images_1_of_5 div {
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	background: white;
+	opacity: 0.9;
+	width: 100%;
+	min-height: 40px;
+	vertical-align: middle;
+}
+.images_1_of_5 div  a{
 	color:#888;
 	font-family: 'ambleregular';
 	font-size:1em;
