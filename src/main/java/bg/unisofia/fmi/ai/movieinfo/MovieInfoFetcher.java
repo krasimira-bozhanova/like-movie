@@ -30,31 +30,29 @@ public class MovieInfoFetcher {
     }
 
     public MovieInfo getMovie(int id) {
-        return new MovieInfo(id, movieFetcher.findMovie(id).getImdbId());
+        return MovieInfo.create(movieFetcher.findMovie(id));
     }
 
     public List<MovieInfo> getFrontPageMovies(int number) {
+        final List<Movie> topMovies = movieFetcher.getTopMovies(number);
 
-        List<Movie> topMovies = movieFetcher.getTopMovies(number);
-
-        return topMovies.stream().map(m -> new MovieInfo(m.getId(), m.getImdbId())).collect(Collectors.toList());
+        return topMovies.stream().map(m -> MovieInfo.create(m)).collect(Collectors.toList());
     }
 
     public List<MovieInfo> getMoviesWithGenre(int number, Genre genre) {
-        List<Movie> moviesWithGenre = movieFetcher.getMoviesWithGenre(number, genre);
+        final List<Movie> moviesWithGenre = movieFetcher.getMoviesWithGenre(number, genre);
 
-        return moviesWithGenre.stream().map(m -> new MovieInfo(m.getId(), m.getImdbId())).collect(Collectors.toList());
+        return moviesWithGenre.stream().map(m -> MovieInfo.create(m)).collect(Collectors.toList());
     }
 
     public List<MovieInfo> getSimilarMovies(int number, MovieInfo movieInfo) {
-        Movie movie = movieFetcher.findMovie(movieInfo.getId());
-        List<Movie> similarMovies = movieFetcher.getSimilarMovies(number, movie);
+        final Movie movie = movieFetcher.findMovie(movieInfo.getId());
+        final List<Movie> similarMovies = movieFetcher.getSimilarMovies(number, movie);
 
-        return similarMovies.stream().map(m -> new MovieInfo(m.getId(), m.getImdbId())).collect(Collectors.toList());
+        return similarMovies.stream().map(m -> MovieInfo.create(m)).collect(Collectors.toList());
     }
 
     private class MovieFetcher implements Recommender {
-
         private final Recommender coldStartRecommender = new ColdStart();
         private final static int NEIGHBOURS_NUMBER = 10;
 

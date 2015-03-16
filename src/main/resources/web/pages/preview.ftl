@@ -12,7 +12,7 @@
         <div class="cont-desc span_1_of_2">
             <div class="product-details">
                 <div class="grid images_3_of_2">
-                    <img src="${movie.image }" alt="" />
+                    <img src="${movie.poster }" alt="" />
                 </div>
                 <div class="desc span_3_of_2">
                     <h2>${movie.getTitle()}</h2>
