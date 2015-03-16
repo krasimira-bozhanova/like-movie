@@ -20,10 +20,14 @@
             </div>
         </div>
         <div class="section group">
-            <#list movies as m>
-                <div class="grid_1_of_5 images_1_of_5">
-                    <a href="/movies/${m.id }"><img src="${m.poster }" alt="${m.title }" /></a>
-                    <h2><a href="/movies/${m.id }">${m.title }</a></h2>
+            <#list movies?chunk(5) as row>
+            	<div>
+            	<#list row as m>
+	                <div class="grid_1_of_5 images_1_of_5">
+	                    <a href="/movies/${m.id }"><img src="${m.poster }" alt="${m.title }" /></a>
+	                    <div><a href="/movies/${m.id }">${m.title }</a></div>
+	                </div>
+                </#list>
                 </div>
             </#list> 
             <br/>
