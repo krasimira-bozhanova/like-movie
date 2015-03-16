@@ -1,38 +1,34 @@
 package bg.unisofia.fmi.ai.movieinfo;
 
-import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 
-import org.json.JSONObject;
+import bg.unisofia.fmi.ai.data.Movie;
+
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 public class MovieInfo {
-
+    private int id;
     private String title;
     private String year;
     private String runtime;
     private String genre;
     private String director;
     private String plot;
-    private String image;
+    private String poster;
     private String writer;
     private String actors;
     private String language;
     private String country;
     private String awards;
     private String imdbRating;
-    private int id;
-    private String imdbId;
-
-    public MovieInfo(int id, String imdbId) {
-        this.id = id;
-        this.imdbId = imdbId;
-
-        retrieveData();
-    }
 
     public int getId() {
         return id;
@@ -62,8 +58,8 @@ public class MovieInfo {
         return plot;
     }
 
-    public String getImage() {
-        return image;
+    public String getPoster() {
+        return poster;
     }
 
     public String getWriter() {
@@ -90,67 +86,29 @@ public class MovieInfo {
         return imdbRating;
     }
 
-    private void retrieveData() {
-        String urlString = "http://www.omdbapi.com/?i=" + this.imdbId + "&plot=full&r=json";
+    public static MovieInfo create(final Movie movie) {
+        final String movieEndpoint = "http://www.omdbapi.com/?i=" + movie.getImdbId() + "&plot=full&r=json";
 
-        URL url;
+        InputStream content;
         try {
-            url = new URL(urlString);
-        } catch (MalformedURLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return;
-        }
-        URLConnection yc;
-        try {
-            yc = url.openConnection();
+            URL url = new URL(movieEndpoint);
+            HttpURLConnection request = (HttpURLConnection) url.openConnection();
+            request.connect();
+            content = (InputStream) request.getContent();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return;
-        }
-        BufferedReader in;
-        try {
-            in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return;
-        }
-        String inputLine;
-        String result = "";
-
-        try {
-            while ((inputLine = in.readLine()) != null) {
-                result += inputLine;
-            }
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        try {
-            in.close();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
-        JSONObject obj = new JSONObject(result);
+        final Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).create();
+        final JsonParser jp = new JsonParser();
+        final JsonElement root = jp.parse(new InputStreamReader(content));
 
-        // TODO: create object in static method
-        System.out.println(obj + " " + this.imdbId);
-        this.title = obj.getString("Title");
-        this.year = obj.getString("Year");
-        this.runtime = obj.getString("Runtime");
-        this.genre = obj.getString("Genre");
-        this.director = obj.getString("Director");
-        this.plot = obj.getString("Plot");
-        this.image = obj.getString("Poster");
-        this.writer = obj.getString("Writer");
-        this.actors = obj.getString("Actors");
-        this.language = obj.getString("Language");
-        this.country = obj.getString("Country");
-        this.awards = obj.getString("Awards");
-        this.imdbRating = obj.getString("imdbRating");
+        final MovieInfo movieInfo = gson.fromJson(root, MovieInfo.class);
+        movieInfo.id = movie.getId();
+        movieInfo.title = movie.getTitle();
+        movieInfo.imdbRating = root.getAsJsonObject().get("imdbRating").getAsString();
+
+        return movieInfo;
     }
+
 }

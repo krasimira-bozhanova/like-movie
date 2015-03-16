@@ -22,7 +22,7 @@
         <div class="section group">
             <#list movies as m>
                 <div class="grid_1_of_5 images_1_of_5">
-                    <a href="/movies/${m.id }"><img src="${m.image }" alt="${m.title }" /></a>
+                    <a href="/movies/${m.id }"><img src="${m.poster }" alt="${m.title }" /></a>
                     <h2><a href="/movies/${m.id }">${m.title }</a></h2>
                 </div>
             </#list> 
