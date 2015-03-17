@@ -37,16 +37,12 @@ public class Main {
         // DataImporter.movielensImporter("src/main/resources/datasets/movielens/");
         // DataImporter.customWikiExtractedFilesImporter("src/main/resources/datasets/wiki/");
 
-        final ConnectionSource connection = DbUtil.getConnectionSource();
-        final GenreService genreService = new GenreService(connection);
-        final UserService userService = new UserService(connection);
-        final MovieService movieService = new MovieService(connection);
-
-        MovieInfoFetcher fetcher = new MovieInfoFetcher();
-
         get("/", (request, response) -> {
+            final ConnectionSource connection = DbUtil.getConnectionSource();
+            final GenreService genreService = new GenreService(connection);
+
             Map<String, Object> attributes = new HashMap<>();
-            List<MovieInfo> movies = fetcher.getFrontPageMovies(FRONT_PAGE_MOVIES);
+            List<MovieInfo> movies = new MovieInfoFetcher().getFrontPageMovies(FRONT_PAGE_MOVIES);
             attributes.put("genres", genreService.list());
             attributes.put("selectedGenre", "all");
             attributes.put("movies", movies);
@@ -56,11 +52,14 @@ public class Main {
         }, new FreeMarkerEngine());
 
         get("/genre/:genreId", (request, response) -> {
+            final ConnectionSource connection = DbUtil.getConnectionSource();
+            final GenreService genreService = new GenreService(connection);
+
             String chosenGenreId = request.params(":genreId");
             Genre genre = genreService.find(Integer.parseInt(chosenGenreId));
 
             Map<String, Object> attributes = new HashMap<>();
-            List<MovieInfo> movies = fetcher.getMoviesWithGenre(FRONT_PAGE_MOVIES, genre);
+            List<MovieInfo> movies = new MovieInfoFetcher().getMoviesWithGenre(FRONT_PAGE_MOVIES, genre);
             attributes.put("message", "Hello World!");
             attributes.put("genres", genreService.list());
             attributes.put("selectedGenre", genre.getName());
@@ -78,6 +77,9 @@ public class Main {
         }, new FreeMarkerEngine());
 
         post("/register", (request, response) -> {
+            final ConnectionSource connection = DbUtil.getConnectionSource();
+            final UserService userService = new UserService(connection);
+
             String username = request.queryParams("username");
             String password = request.queryParams("password");
             String passwordRepeat = request.queryParams("repeat_password");
@@ -104,6 +106,9 @@ public class Main {
         }, new FreeMarkerEngine());
 
         post("/login", (request, response) -> {
+            final ConnectionSource connection = DbUtil.getConnectionSource();
+            final UserService userService = new UserService(connection);
+
             final String username = request.queryParams("username");
             final String password = request.queryParams("password");
 
@@ -130,6 +135,10 @@ public class Main {
         });
 
         get("/movies/:movieId", (request, response) -> {
+            final ConnectionSource connection = DbUtil.getConnectionSource();
+            final GenreService genreService = new GenreService(connection);
+            final MovieInfoFetcher fetcher = new MovieInfoFetcher();
+
             int chosenMovieId = Integer.parseInt(request.params(":movieId"));
             MovieInfo movieInfo = fetcher.getMovie(chosenMovieId);
 
@@ -143,6 +152,9 @@ public class Main {
         }, new FreeMarkerEngine());
 
         get("/movies", (request, response) -> {
+            final ConnectionSource connection = DbUtil.getConnectionSource();
+            final MovieService movieService = new MovieService(connection);
+
             final String searchText = request.queryParams("name");
 
             return movieService.autocompleteSearch(searchText);
