@@ -21,8 +21,8 @@ public class UserTest {
 
     @Test
     public void testGetRating() {
-        user1.rate(movie1, 2);
-        user1.rate(movie2, 1);
+        user1.like(movie1, 2);
+        user1.like(movie2, 1);
 
         assertThat(user1.getRating(movie1.getId())).isEqualTo(2);
         assertThat(user1.getRating(movie2.getId())).isEqualTo(1);

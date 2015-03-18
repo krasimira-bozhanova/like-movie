@@ -73,6 +73,7 @@ public class UserService {
     public void create(final User user) {
         userDao.create(user);
         userDao.assignEmptyForeignCollection(user, "ratings");
+        userDao.assignEmptyForeignCollection(user, "watchings");
     }
 
 

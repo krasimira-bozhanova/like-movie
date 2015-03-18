@@ -14,11 +14,13 @@ import bg.unisofia.fmi.ai.dao.MovieGenreService;
 import bg.unisofia.fmi.ai.dao.MovieService;
 import bg.unisofia.fmi.ai.dao.RatingService;
 import bg.unisofia.fmi.ai.dao.UserService;
+import bg.unisofia.fmi.ai.dao.WatchingService;
 import bg.unisofia.fmi.ai.data.Genre;
 import bg.unisofia.fmi.ai.data.Movie;
 import bg.unisofia.fmi.ai.data.MovieGenre;
 import bg.unisofia.fmi.ai.data.Rating;
 import bg.unisofia.fmi.ai.data.User;
+import bg.unisofia.fmi.ai.data.Watching;
 import bg.unisofia.fmi.ai.db.util.DbUtil;
 
 import com.j256.ormlite.support.ConnectionSource;
@@ -113,6 +115,7 @@ public class DataImporter {
         final UserService userService = new UserService(connectionSource);
         final GenreService genreService = new GenreService(connectionSource);
         final RatingService ratingService = new RatingService(connectionSource);
+        final WatchingService watchingService = new WatchingService(connectionSource);
         final MovieGenreService movieGenreService = new MovieGenreService(
                 connectionSource);
 
@@ -202,6 +205,22 @@ public class DataImporter {
                 ratingService.save(rating);
             });
         }
+
+        try (Stream<String> lines = Files.lines(
+                Paths.get(filesPath, "watchings.data"), Charset.defaultCharset())) {
+            lines.forEachOrdered(line -> {
+                final String[] lineParts = line.split(":", 3);
+                final int movieId = Integer.parseInt(lineParts[0]);
+                final int userId = Integer.parseInt(lineParts[1]);
+
+                final User user = userService.find(userId);
+                final Movie movie = movieService.find(movieId);
+                final Watching wathing = new Watching(user, movie);
+                watchingService.save(wathing);
+            });
+        }
+
+
 
     }
 }

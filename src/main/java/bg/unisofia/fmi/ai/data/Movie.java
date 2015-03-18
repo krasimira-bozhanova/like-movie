@@ -24,6 +24,9 @@ public class Movie implements Comparable<Movie> {
     @ForeignCollectionField(eager = false)
     private ForeignCollection<MovieGenre> genres;
 
+    @ForeignCollectionField(eager = false)
+    private ForeignCollection<Watching> watchings;
+
     public Movie() {
     }
 
