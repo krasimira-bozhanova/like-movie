@@ -44,12 +44,12 @@ public class UserStatisticsTest {
     public void testGetMeanRating() {
         assertThat(UserStatistics.getMeanRating(user1)).isEqualTo(0);
 
-        user1.rate(movie1, 0);
-        user1.rate(movie2, 1);
-        user1.rate(movie3, 2);
+        user1.like(movie1, 0);
+        user1.like(movie2, 1);
+        user1.like(movie3, 2);
         assertThat(UserStatistics.getMeanRating(user1)).isEqualTo(1);
 
-        user1.rate(movie4, 0);
+        user1.like(movie4, 0);
         assertThat(UserStatistics.getMeanRating(user1)).isEqualTo(0.75);
 
     }
@@ -58,29 +58,29 @@ public class UserStatisticsTest {
     public void testGetStandsrdDeviation() {
         final Set<Movie> movies = new TreeSet<Movie>();
 
-        user1.rate(movie1, 2);
-        user1.rate(movie2, 1);
+        user1.like(movie1, 2);
+        user1.like(movie2, 1);
         assertThat(UserStatistics.getStandardDeviation(user1, movies)).isEqualTo(0);
 
         movies.add(movie1);
         movies.add(movie2);
         assertThat(UserStatistics.getStandardDeviation(user1, movies)).isEqualTo(0.5);
 
-        user1.rate(movie3, 0);
-        user1.rate(movie4, 0);
+        user1.like(movie3, 0);
+        user1.like(movie4, 0);
         assertThat(UserStatistics.getStandardDeviation(user1, movies)).isEqualTo(0.9013878188659973);
     }
 
     @Test
     public void testGetRelatedUsers() {
 
-        user1.rate(movie2, 1);
-        user1.rate(movie1, 2);
+        user1.like(movie2, 1);
+        user1.like(movie1, 2);
 
-        user2.rate(movie2, 2);
-        user2.rate(movie3, 1);
+        user2.like(movie2, 2);
+        user2.like(movie3, 1);
 
-        user3.rate(movie3, 1);
+        user3.like(movie3, 1);
 
         Set<User> relatedUsersToUser1 = new TreeSet<User>();
         relatedUsersToUser1.add(user2);
@@ -101,11 +101,11 @@ public class UserStatisticsTest {
     public void testGetMoviesInCommon() {
         assertThat(UserStatistics.getMoviesInCommon(user1, user2)).isEmpty();
 
-        user1.rate(movie1, 2);
-        user1.rate(movie2, 2);
+        user1.like(movie1, 2);
+        user1.like(movie2, 2);
 
-        user2.rate(movie2, 2);
-        user2.rate(movie3, 2);
+        user2.like(movie2, 2);
+        user2.like(movie3, 2);
 
         assertThat(UserStatistics.getMoviesInCommon(user1, user2)).containsOnly(movie2);
         assertThat(UserStatistics.getMoviesInCommon(user2, user1)).containsOnly(movie2);
@@ -115,11 +115,11 @@ public class UserStatisticsTest {
     public void testGetMoviesDifference() {
         assertThat(UserStatistics.getMoviesDifference(user1, user2)).isEmpty();
 
-        user1.rate(movie1, 2);
-        user1.rate(movie2, 2);
+        user1.like(movie1, 2);
+        user1.like(movie2, 2);
 
-        user2.rate(movie2, 2);
-        user2.rate(movie3, 2);
+        user2.like(movie2, 2);
+        user2.like(movie3, 2);
 
         assertThat(UserStatistics.getMoviesDifference(user1, user2)).containsOnly(movie1);
         assertThat(UserStatistics.getMoviesDifference(user2, user1)).containsOnly(movie3);

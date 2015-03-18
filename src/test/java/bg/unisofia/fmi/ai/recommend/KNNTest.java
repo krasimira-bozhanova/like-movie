@@ -38,13 +38,13 @@ public class KNNTest {
         beforeEachCreateUsers();
         beforeEachCreateMovies();
 
-        user1.rate(movie1, 2);
-        user1.rate(movie2, 2);
+        user1.like(movie1, 2);
+        user1.like(movie2, 2);
 
-        user2.rate(movie3, 1);
+        user2.like(movie3, 1);
 
-        user3.rate(movie1, 1);
-        user3.rate(movie4, 2);
+        user3.like(movie1, 1);
+        user3.like(movie4, 2);
     }
 
     @Test
@@ -53,11 +53,11 @@ public class KNNTest {
         KNN newUserProblem = new KNN(newUser, 1);
         assertThat(newUserProblem.getClosestNeighbours()).isEmpty();
 
-        newUser.rate(movie1, 2);
+        newUser.like(movie1, 2);
 
         assertThat(newUserProblem.getClosestNeighbours()).containsOnlyKeys(user1);
 
-        newUser.rate(movie1, 1);
+        newUser.like(movie1, 1);
         newUserProblem = new KNN(newUser, 2);
 
         assertThat(newUserProblem.getClosestNeighbours()).containsOnlyKeys(user3, user1);
@@ -71,7 +71,7 @@ public class KNNTest {
         assertThat(newUserProblem.calculateSimilatiry(user2)).isEqualTo(0);
         assertThat(newUserProblem.calculateSimilatiry(user3)).isEqualTo(0);
 
-        newUser.rate(movie1, 2);
+        newUser.like(movie1, 2);
 
         assertThat(newUserProblem.calculateSimilatiry(newUser)).isEqualTo(1);
         assertThat(newUserProblem.calculateSimilatiry(user1)).isEqualTo(1);
@@ -83,7 +83,7 @@ public class KNNTest {
     @Test
     public void testGetMoviesToRecommend() {
         User newUser = new User(4);
-        newUser.rate(movie1, 2);
+        newUser.like(movie1, 2);
 
         KNN newUserProblem = new KNN(newUser, 2);
 
@@ -93,7 +93,7 @@ public class KNNTest {
     @Test
     public void testGetExpectedRating() {
         User newUser = new User(4);
-        newUser.rate(movie1, 2);
+        newUser.like(movie1, 2);
 
         KNN newUserProblem = new KNN(newUser, 2);
 

@@ -1,7 +1,6 @@
 package bg.unisofia.fmi.ai.data;
 
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
@@ -20,8 +19,8 @@ public class User implements Comparable<User> {
     @ForeignCollectionField(eager = false)
     private ForeignCollection<Rating> ratings;
 
-    //@ForeignCollectionField(eager = false)
-    private ForeignCollection<Movie> watched;
+    @ForeignCollectionField(eager = false)
+    private ForeignCollection<Watching> watchings;
 
     public User() {
     }
@@ -58,18 +57,16 @@ public class User implements Comparable<User> {
     }
 
     public double getRating(int movieId) {
-        System.out.println(ratings.size());
-        Stream<Rating> a = ratings.stream().filter(r -> r.getMovie().getId().equals(movieId));
-        Optional<Double> rating = a.map(Rating::getRating)
+        Optional<Double> rating = ratings.stream().filter(r -> r.getMovie().getId().equals(movieId)).map(Rating::getRating)
                 .findFirst();
 
         return rating.orElse(0d);
     }
 
     public boolean getWatched(int movieId) {
-        Optional<Movie> watchedMovie = watched.stream().filter(m -> m.getId().equals(movieId)).findFirst();
+        Optional<Watching> watching = watchings.stream().filter(w -> w.getMovie().getId().equals(movieId)).findFirst();
 
-        return watchedMovie.isPresent();
+        return watching.isPresent();
     }
 
     public void setUser(User user) {
@@ -80,9 +77,21 @@ public class User implements Comparable<User> {
 
     }
 
-    public void rate(final Movie movie, final double rating) {
+    public void like(final Movie movie, final double rating) {
         // TODO
         // this.ratings.put(movie, rating);
+    }
+
+    public void unlike(final Movie movie) {
+
+    }
+
+    public void watch(final Movie movie) {
+
+    }
+
+    public void unwatch(final Movie movie) {
+
     }
 
     @Override
