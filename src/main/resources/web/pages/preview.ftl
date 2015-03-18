@@ -25,18 +25,8 @@
                     </div>
                     <div class="share-desc">
                         <div class="rating">
-                            <div class="dropdown">
-                              <select name="vote">
-                                <option value="0" selected="selected" >Your rating:</option>
-                                  <option value="1">1</option>
-                                  <option value="2">2</option>
-                                  <option value="3">3</option>
-                                  <option value="4">4</option>
-                                  <option value="5">5</option>
-                              </select>
-                              <input type="submit" value="Give rating" > 
-
-                            </div>
+                              <input type="submit" value="Like" > 
+                              <input type="submit" value="Watched" > 
                         </div>
                         <div class="clear"></div>
                     </div>

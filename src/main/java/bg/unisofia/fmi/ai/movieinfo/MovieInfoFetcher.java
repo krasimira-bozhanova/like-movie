@@ -45,8 +45,8 @@ public class MovieInfoFetcher {
         return moviesWithGenre.stream().map(m -> MovieInfo.create(m)).collect(Collectors.toList());
     }
 
-    public List<MovieInfo> getSimilarMovies(int number, MovieInfo movieInfo) {
-        final Movie movie = movieFetcher.findMovie(movieInfo.getId());
+    public List<MovieInfo> getSimilarMovies(int number, int movieId) {
+        final Movie movie = movieFetcher.findMovie(movieId);
         final List<Movie> similarMovies = movieFetcher.getSimilarMovies(number, movie);
 
         return similarMovies.stream().map(m -> MovieInfo.create(m)).collect(Collectors.toList());

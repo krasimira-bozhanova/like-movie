@@ -70,8 +70,8 @@ public class KNN implements Recommender {
         }
 
         for (Movie commonMovie : moviesInCommon) {
-            numerator += (otherUser.getRating(commonMovie) - UserStatistics.getMeanRating(otherUser))
-                    * (user.getRating(commonMovie) - UserStatistics.getMeanRating(user));
+            numerator += (otherUser.getRating(commonMovie.getId()) - UserStatistics.getMeanRating(otherUser))
+                    * (user.getRating(commonMovie.getId()) - UserStatistics.getMeanRating(user));
         }
 
         double denominator = (moviesInCommon.size() * UserStatistics.getStandardDeviation(user, moviesInCommon) * UserStatistics
@@ -121,8 +121,8 @@ public class KNN implements Recommender {
             User neighbour = neighbourSimilatiry.getKey();
             Double similarity = neighbourSimilatiry.getValue();
 
-            if (neighbour.getRating(movie) != 0) {
-                numerator += (similarity * (neighbour.getRating(movie) - UserStatistics.getMeanRating(neighbour)));
+            if (neighbour.getRating(movie.getId()) != 0) {
+                numerator += (similarity * (neighbour.getRating(movie.getId()) - UserStatistics.getMeanRating(neighbour)));
                 denominator += Math.abs(similarity);
             }
         }

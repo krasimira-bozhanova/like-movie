@@ -13,7 +13,7 @@ import com.j256.ormlite.support.ConnectionSource;
 
 public class UserService {
 
-    private RuntimeExceptionDao<User, String> userDao;
+    private RuntimeExceptionDao<User, Integer> userDao;
 
     public UserService(ConnectionSource connectionSource) {
         try {
@@ -23,7 +23,7 @@ public class UserService {
         }
     }
 
-    public User find(final String userId) {
+    public User find(final int userId) {
         return userDao.queryForId(userId);
     }
 
@@ -68,6 +68,11 @@ public class UserService {
         }
 
         return user.get(0);
+    }
+
+    public void create(final User user) {
+        userDao.create(user);
+        userDao.assignEmptyForeignCollection(user, "ratings");
     }
 
 
