@@ -37,10 +37,9 @@ public class DatasetsUtil {
         properties.add("");
         properties.add(user.getUsername());
         properties.add(user.getPassword());
-        System.out.println(String.join("|", properties));
 
         PrintWriter writer = getWriter("src/main/resources/datasets/u.user");
-        System.out.println(writer);
+
         writer.println(String.join("|", properties));
         writer.close();
 

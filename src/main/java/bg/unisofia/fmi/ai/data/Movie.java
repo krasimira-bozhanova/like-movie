@@ -53,6 +53,10 @@ public class Movie implements Comparable<Movie> {
         return ratings;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;

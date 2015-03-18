@@ -24,9 +24,9 @@ public class UserTest {
         user1.rate(movie1, 2);
         user1.rate(movie2, 1);
 
-        assertThat(user1.getRating(movie1)).isEqualTo(2);
-        assertThat(user1.getRating(movie2)).isEqualTo(1);
-        assertThat(user1.getRating(movie3)).isEqualTo(0);
+        assertThat(user1.getRating(movie1.getId())).isEqualTo(2);
+        assertThat(user1.getRating(movie2.getId())).isEqualTo(1);
+        assertThat(user1.getRating(movie3.getId())).isEqualTo(0);
     }
 
 }
