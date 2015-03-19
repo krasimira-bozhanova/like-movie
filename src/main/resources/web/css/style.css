@@ -667,6 +667,7 @@ body {
 .movie_poster img{
 	display:block;
 	max-width:100%;
+	width: 110px;
 }
 .movie_desc{
 	float:left;
