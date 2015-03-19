@@ -202,8 +202,7 @@ public class Main {
         get("/movies/:movieId/unwatch", (request, response) -> {
             final ConnectionSource connection = DbUtil.getConnectionSource();
             final WatchingService watchingService = new WatchingService(connection);
-            final MovieService movieService = new MovieService(connection);
-            final UserService userService = new UserService(connection);
+
             int chosenMovieId = Integer.parseInt(request.params(":movieId"));
             watchingService.remove(request.session().attribute(USERID_ATTR), chosenMovieId);
             response.redirect("/movies/" + chosenMovieId);

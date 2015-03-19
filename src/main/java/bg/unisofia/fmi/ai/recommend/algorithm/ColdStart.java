@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -34,12 +35,48 @@ public class ColdStart implements Recommender {
         // TODO: Check genre
         movieService.refresh(movie);
         Set<User> usersForCurrentMovie = movie.getRatings().stream().map(r -> r.getUser()).collect(Collectors.toSet());
-        Map<Movie, Double> relatedMoviesSum = new HashMap<>();
-        Map<Movie, Integer> relatedMoviesCount = new HashMap<>();
+
+        Set<Movie> relatedMovies = new TreeSet<Movie>();
         for (User currentUser : usersForCurrentMovie) {
             userService.refresh(currentUser);
             for (Rating currentRating : currentUser.getRatings()) {
                 Movie currentMovie = currentRating.getMovie();
+                relatedMovies.add(currentMovie);
+            }
+        }
+
+        List<Movie> relatedMoviesList = new ArrayList<Movie>();
+        relatedMoviesList.addAll(relatedMovies);
+
+        Random random = new Random();
+        List<Movie> limitedMovies = new ArrayList<Movie>();
+        for (int i = 0; i < number; i++) {
+            int randomIndex = random.nextInt(relatedMoviesList.size());
+            Movie currentMovie = relatedMoviesList.get(randomIndex);
+            relatedMoviesList.remove(randomIndex);
+            movieService.refresh(currentMovie);
+            limitedMovies.add(currentMovie);
+        }
+
+        return limitedMovies;
+    }
+
+
+    private List<Movie> getSimilarMoviesWithRating(int number, Movie movie) {
+        // People who liked this also liked the most...
+        // TODO: Check genre
+        movieService.refresh(movie);
+        Set<User> usersForCurrentMovie = movie.getRatings().stream().map(r -> r.getUser()).collect(Collectors.toSet());
+
+        Map<Movie, Double> relatedMoviesSum = new HashMap<>();
+        Map<Movie, Integer> relatedMoviesCount = new HashMap<>();
+
+
+        for (User currentUser : usersForCurrentMovie) {
+            userService.refresh(currentUser);
+            for (Rating currentRating : currentUser.getRatings()) {
+                Movie currentMovie = currentRating.getMovie();
+
                 double rating = currentRating.getRating();
 
                 if (!relatedMoviesSum.containsKey(currentMovie)) {
@@ -74,7 +111,8 @@ public class ColdStart implements Recommender {
 
         sortedMovieSet.addAll(relatedMoviesRating.entrySet());
 
-        List<Movie> limitedMovies = new ArrayList<>();
+
+        List<Movie> limitedMovies = new ArrayList<Movie>();
         int i = 0;
         for (Map.Entry<Movie, Double> entry : sortedMovieSet) {
             Movie currentMovie = entry.getKey();
@@ -83,6 +121,7 @@ public class ColdStart implements Recommender {
                 limitedMovies.add(currentMovie);
             }
         }
+
         return limitedMovies;
     }
 
