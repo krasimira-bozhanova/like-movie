@@ -124,4 +124,13 @@ public class User implements Comparable<User> {
         return this.id.compareTo(o.id);
     }
 
+    @Override
+    public String toString() {
+        return "User [id=" + id + ", username=" + username + ", password="
+                + password + ", ratings=" + ratings + ", watchings="
+                + watchings + "]";
+    }
+
+
+
 }

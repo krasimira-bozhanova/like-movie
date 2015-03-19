@@ -13,9 +13,14 @@ import java.util.Map;
 import spark.ModelAndView;
 import bg.unisofia.fmi.ai.dao.GenreService;
 import bg.unisofia.fmi.ai.dao.MovieService;
+import bg.unisofia.fmi.ai.dao.RatingService;
 import bg.unisofia.fmi.ai.dao.UserService;
+import bg.unisofia.fmi.ai.dao.WatchingService;
 import bg.unisofia.fmi.ai.data.Genre;
+import bg.unisofia.fmi.ai.data.Movie;
+import bg.unisofia.fmi.ai.data.Rating;
 import bg.unisofia.fmi.ai.data.User;
+import bg.unisofia.fmi.ai.data.Watching;
 import bg.unisofia.fmi.ai.db.util.DbUtil;
 import bg.unisofia.fmi.ai.movieinfo.MovieInfo;
 import bg.unisofia.fmi.ai.movieinfo.MovieInfoFetcher;
@@ -23,6 +28,7 @@ import bg.unisofia.fmi.ai.template.FreeMarkerEngine;
 import bg.unisofia.fmi.ai.transformers.JsonTransformer;
 
 import com.j256.ormlite.support.ConnectionSource;
+
 
 public class Main {
     public final static int SIMILAR_MOVIES_NUMBER = 4;
@@ -138,6 +144,9 @@ public class Main {
             final ConnectionSource connection = DbUtil.getConnectionSource();
             final GenreService genreService = new GenreService(connection);
             final MovieInfoFetcher fetcher = new MovieInfoFetcher();
+            final RatingService ratingService = new RatingService(connection);
+
+            final WatchingService watchingService = new WatchingService(connection);
 
             int chosenMovieId = Integer.parseInt(request.params(":movieId"));
             MovieInfo movieInfo = fetcher.getMovie(chosenMovieId);
@@ -147,10 +156,8 @@ public class Main {
             attributes.put("movie", movieInfo);
             attributes.put("username", request.session().attribute(USERNAME_ATTR));
             attributes.put("movies", fetcher.getSimilarMovies(SIMILAR_MOVIES_NUMBER, chosenMovieId));
-            // attributes.put("liked", currentUser.getRating(chosenMovieId));
-            // attributes.put("watched", currentUser.getWatched(chosenMovieId));
-                attributes.put("movies", fetcher.getSimilarMovies(SIMILAR_MOVIES_NUMBER, chosenMovieId));
-
+            attributes.put("liked", ratingService.find(request.session().attribute(USERID_ATTR), chosenMovieId));
+            attributes.put("watched", watchingService.find(request.session().attribute(USERID_ATTR), chosenMovieId));
                 return new ModelAndView(attributes, "preview.ftl");
             }, new FreeMarkerEngine());
 
@@ -162,6 +169,58 @@ public class Main {
 
             return movieService.autocompleteSearch(searchText);
         }, new JsonTransformer());
+
+        get("/movies/:movieId/like", (request, response) -> {
+            final ConnectionSource connection = DbUtil.getConnectionSource();
+            final RatingService ratingService = new RatingService(connection);
+            final MovieService movieService = new MovieService(connection);
+            final UserService userService = new UserService(connection);
+            int chosenMovieId = Integer.parseInt(request.params(":movieId"));
+            Movie movie = movieService.find(chosenMovieId);
+            User user = userService.find(request.session().attribute(USERID_ATTR));
+            // TODO: think about the value of rating
+            Rating newRating = new Rating(user, movie, 1);
+            ratingService.save(newRating);
+            response.redirect("/movies/" + chosenMovieId);
+            return null;
+        });
+
+        get("/movies/:movieId/watch", (request, response) -> {
+            final ConnectionSource connection = DbUtil.getConnectionSource();
+            final WatchingService watchingService = new WatchingService(connection);
+            final MovieService movieService = new MovieService(connection);
+            final UserService userService = new UserService(connection);
+            int chosenMovieId = Integer.parseInt(request.params(":movieId"));
+            Movie movie = movieService.find(chosenMovieId);
+            User user = userService.find(request.session().attribute(USERID_ATTR));
+            Watching newWatching = new Watching(user, movie);
+            watchingService.save(newWatching);
+            response.redirect("/movies/" + chosenMovieId);
+            return null;
+        });
+
+        get("/movies/:movieId/unwatch", (request, response) -> {
+            final ConnectionSource connection = DbUtil.getConnectionSource();
+            final WatchingService watchingService = new WatchingService(connection);
+            final MovieService movieService = new MovieService(connection);
+            final UserService userService = new UserService(connection);
+            int chosenMovieId = Integer.parseInt(request.params(":movieId"));
+            watchingService.remove(request.session().attribute(USERID_ATTR), chosenMovieId);
+            response.redirect("/movies/" + chosenMovieId);
+            return null;
+        });
+
+        get("/movies/:movieId/unlike", (request, response) -> {
+            final ConnectionSource connection = DbUtil.getConnectionSource();
+            final RatingService ratingService = new RatingService(connection);
+            final MovieService movieService = new MovieService(connection);
+            final UserService userService = new UserService(connection);
+            int chosenMovieId = Integer.parseInt(request.params(":movieId"));
+            ratingService.remove(request.session().attribute(USERID_ATTR), chosenMovieId);
+            response.redirect("/movies/" + chosenMovieId);
+            return null;
+        });
+
 
     }
 }

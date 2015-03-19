@@ -58,7 +58,6 @@ public class UserService {
     }
 
     public User login(String username, String password) throws Exception {
-
         Map<String, Object> queryArguments = new HashMap<String, Object>();
         queryArguments.put("username", username);
         queryArguments.put("password", password);
@@ -75,8 +74,6 @@ public class UserService {
         userDao.assignEmptyForeignCollection(user, "ratings");
         userDao.assignEmptyForeignCollection(user, "watchings");
     }
-
-
 
     public void save(final User user) {
         userDao.createOrUpdate(user);

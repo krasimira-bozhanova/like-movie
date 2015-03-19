@@ -124,6 +124,7 @@ public class DataImporter {
         TableUtils.createTableIfNotExists(connectionSource, Genre.class);
         TableUtils.createTableIfNotExists(connectionSource, Rating.class);
         TableUtils.createTableIfNotExists(connectionSource, MovieGenre.class);
+        TableUtils.createTableIfNotExists(connectionSource, Watching.class);
 
         try (Stream<String> lines = Files.lines(
                 Paths.get(filesPath, "movies.data"), Charset.defaultCharset())) {
@@ -190,6 +191,8 @@ public class DataImporter {
             });
         }
 
+//        List<Integer> a = new ArrayList<Integer>();
+
         try (Stream<String> lines = Files.lines(
                 Paths.get(filesPath, "edits.data"), Charset.defaultCharset())) {
             lines.forEachOrdered(line -> {
@@ -201,10 +204,13 @@ public class DataImporter {
                 final User user = userService.find(userId);
                 final Movie movie = movieService.find(movieId);
 
-                final Rating rating = new Rating(user, movie, numberOfEdits);
+                final Rating rating = new Rating(user, movie, 1);
                 ratingService.save(rating);
             });
         }
+
+//        Collections.sort(a);
+//        System.out.println(a.get(a.size() - 1));
 
         try (Stream<String> lines = Files.lines(
                 Paths.get(filesPath, "watchings.data"), Charset.defaultCharset())) {
