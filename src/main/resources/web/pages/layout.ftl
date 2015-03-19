@@ -20,14 +20,32 @@
                         </ul>
                     </div>
                     <div class="account_desc">
-                        <ul>
-                        	<#if !username?has_content>
-                            	<li><a href="/register">Register</a></li>
-                            	<li><a href="/login">Login</a></li>
-                            <#else>
-                            	<li><a href="/logout">Logout</a></li>
-                            </#if>
-                        </ul>
+					  <ul>
+					  <#if !username?has_content>
+					    <li id="login">
+					      <a id="login-trigger" tabindex="0">Log in</a>
+					      <div id="login-form">
+					      	  <div id="login-form-left-pane">
+					            <form action="/login" method="post">
+					                <input type="text" name="username" placeholder="Username" />
+					                <input type="password" name="password" placeholder="Password" />
+
+					                <input type="submit" id="login-button" value="Log In" />
+					            </form>
+					            </div>
+					            <div id="login-form-right-pane">
+					            	<a href="${facebookAuthUrl}"><img src="/images/facebook-login.png" alt="Login with facebook" /></a>
+					            </div>
+					            <div class="clear"></div>
+					        </div>                 
+					    </li>
+					    <li id="signup">
+					      <a href="">Sign up</a>
+					    </li>
+                        <#else>
+                            <li><a href="/logout">Logout</a></li>
+                        </#if>
+					  </ul>
                     </div>
                     <div class="clear"></div>
                 </div>
@@ -76,7 +94,11 @@
 				    },
 				    width: 342
 				});
-            });
+
+				$('#login-trigger').click(function(){
+	    			$(this).next('#login-form').slideToggle();
+	            });
+	        });
         </script>
         <a href="#" id="toTop"><span id="toTopHover"> </span></a>
     </body>

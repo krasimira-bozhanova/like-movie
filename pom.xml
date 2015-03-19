@@ -48,6 +48,11 @@
 			<artifactId>h2</artifactId>
 			<version>1.4.185</version>
 		</dependency>
+		<dependency>
+			<groupId>ru.hh.oauth.subscribe</groupId>
+			<artifactId>apis</artifactId>
+			<version>3.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
