@@ -19,16 +19,13 @@ public class MovieInfoFetcher {
 
     List<MovieInfo> movieInfos = new ArrayList<MovieInfo>();
 
-    public MovieInfoFetcher() {
-        movieFetcher = new MovieFetcher();
-    }
-
-    public void switchUser() {
-        movieFetcher.switchUser();
-    }
-
-    public void switchUser(User user) {
-        movieFetcher.switchUser(user);
+    public MovieInfoFetcher(Integer userId) {
+        if (userId == null) {
+            movieFetcher = new MovieFetcher();
+        }
+        else {
+            movieFetcher = new MovieFetcher(userId);
+        }
     }
 
     public MovieInfo getMovie(int id) {
@@ -66,13 +63,8 @@ public class MovieInfoFetcher {
             secondRecommender = coldStartRecommender;
         }
 
-        public void switchUser() {
-            primeRecommender = coldStartRecommender;
-            secondRecommender = coldStartRecommender;
-        }
-
-        public void switchUser(User user) {
-            primeRecommender = new KNN(user, NEIGHBOURS_NUMBER);
+        public MovieFetcher(Integer userId) {
+            primeRecommender = new KNN(findUser(userId), NEIGHBOURS_NUMBER);
             secondRecommender = coldStartRecommender;
         }
 
@@ -85,6 +77,9 @@ public class MovieInfoFetcher {
             resultMovies.addAll(secondResult);
             ArrayList<Movie> result = new ArrayList<Movie>();
             result.addAll(resultMovies);
+            result.forEach(movie -> {
+                movieService.refresh(movie);
+            });
             return result;
         }
 
@@ -97,6 +92,9 @@ public class MovieInfoFetcher {
             resultMovies.addAll(secondResult);
             ArrayList<Movie> result = new ArrayList<Movie>();
             result.addAll(resultMovies);
+            result.forEach(m -> {
+                movieService.refresh(m);
+            });
             return result;
         }
 
@@ -109,11 +107,18 @@ public class MovieInfoFetcher {
             resultMovies.addAll(secondResult);
             ArrayList<Movie> result = new ArrayList<Movie>();
             result.addAll(resultMovies);
+            result.forEach(movie -> {
+                movieService.refresh(movie);
+            });
             return result;
         }
 
         public Movie findMovie(int id) {
             return getMovieService().find(id);
+        }
+
+        public User findUser(int id) {
+            return getUserService().find(id);
         }
 
     }

@@ -112,9 +112,13 @@ public class MovieInfo {
         final MovieInfo movieInfo = gson.fromJson(root, MovieInfo.class);
         movieInfo.id = movie.getId();
         movieInfo.title = movie.getTitle();
-        movieInfo.imdbRating = root.getAsJsonObject().get("imdbRating").getAsString();
 
-        if (movieInfo.getPoster().equals(UNKNOWN_PROPERTY_VALUE)) {
+        JsonElement imdbRatingElement = root.getAsJsonObject().get("imdbRating");
+        if (imdbRatingElement != null) {
+            movieInfo.imdbRating = imdbRatingElement.getAsString();
+        }
+
+        if (movieInfo.getPoster() != null && movieInfo.getPoster().equals(UNKNOWN_PROPERTY_VALUE)) {
             movieInfo.poster = null;
         }
 

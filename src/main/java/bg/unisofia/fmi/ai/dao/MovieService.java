@@ -64,6 +64,12 @@ public class MovieService {
         return result;
     }
 
+    public void create(final Movie movie) {
+        movieDao.create(movie);
+        movieDao.assignEmptyForeignCollection(movie, "ratings");
+        movieDao.assignEmptyForeignCollection(movie, "watchings");
+    }
+
     public void save(final Movie movie) {
         movieDao.createOrUpdate(movie);
     }
