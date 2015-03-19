@@ -34,7 +34,8 @@ public class ColdStart implements Recommender {
         // TODO: Check genre
         movieService.refresh(movie);
         Set<User> usersForCurrentMovie = movie.getRatings().stream().map(r -> r.getUser()).collect(Collectors.toSet());
-
+        System.out.println("Users for movie: " + usersForCurrentMovie.size());
+        System.out.println("We want: " + number);
         Map<Movie, Double> relatedMoviesSum = new HashMap<>();
         Map<Movie, Integer> relatedMoviesCount = new HashMap<>();
         for (User currentUser : usersForCurrentMovie) {
@@ -53,6 +54,8 @@ public class ColdStart implements Recommender {
             }
         }
 
+        System.out.println("RelatedMovies:" + relatedMoviesCount.size());
+
         Map<Movie, Double> relatedMoviesRating = new HashMap<>();
         for (Map.Entry<Movie, Integer> entry : relatedMoviesCount.entrySet()) {
             Movie currentMovie = entry.getKey();
@@ -65,14 +68,20 @@ public class ColdStart implements Recommender {
                 new Comparator<Map.Entry<Movie, Double>>() {
                     @Override
                     public int compare(Map.Entry<Movie, Double> e1, Map.Entry<Movie, Double> e2) {
-                        return Double.compare(e1.getValue(), e2.getValue());
+                        int doubleComparison = Double.compare(e1.getValue(), e2.getValue());
+                        if (doubleComparison != 0)
+                            return doubleComparison;
+
+                        return e1.getKey().getId().compareTo(e2.getKey().getId());
                     }
                 });
 
+        System.out.println("Related ratings: " + relatedMoviesRating.entrySet().size());
         sortedMovieSet.addAll(relatedMoviesRating.entrySet());
 
         List<Movie> limitedMovies = new ArrayList<>();
         int i = 0;
+        System.out.println("Sorted: " + sortedMovieSet.size());
         for (Map.Entry<Movie, Double> entry : sortedMovieSet) {
             Movie currentMovie = entry.getKey();
             if (i++ < number) {

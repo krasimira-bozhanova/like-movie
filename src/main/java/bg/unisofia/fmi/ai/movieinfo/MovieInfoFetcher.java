@@ -86,7 +86,9 @@ public class MovieInfoFetcher {
         @Override
         public List<Movie> getSimilarMovies(int number, Movie movie) {
             List<Movie> primeResult = primeRecommender.getSimilarMovies(number, movie);
+            System.out.println("Prime: " + primeResult.size());
             List<Movie> secondResult = secondRecommender.getSimilarMovies(number - primeResult.size(), movie);
+            System.out.println("Second: " + secondResult.size());
             primeResult.addAll(secondResult);
             return primeResult;
         }
