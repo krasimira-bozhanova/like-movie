@@ -25,8 +25,18 @@
                     </div>
                     <div class="share-desc">
                         <div class="rating">
-                              <input type="submit" value="Like" > 
-                              <input type="submit" value="Watched" > 
+                              <#if username?has_content>
+                                  <#if liked>
+                                     <a href="${movie.id?c}/unlike">Unlike</a>
+                                  <#else>
+                                     <a href="${movie.id?c}/like">Like</a>
+                                  </#if> 
+                                  <#if watched>
+                                     <a href="${movie.id?c}/unwatch">Unwatch</a> 
+                                  <#else>
+                                     <a href="${movie.id?c}/watch">Watch</a>
+                                  </#if> 
+                              </#if>
                         </div>
                         <div class="clear"></div>
                     </div>

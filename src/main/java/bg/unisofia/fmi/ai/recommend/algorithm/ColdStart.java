@@ -32,13 +32,13 @@ public class ColdStart implements Recommender {
     public List<Movie> getSimilarMovies(int number, Movie movie) {
         // People who liked this also liked...
         // TODO: Check genre
+        movieService.refresh(movie);
         Set<User> usersForCurrentMovie = movie.getRatings().stream().map(r -> r.getUser()).collect(Collectors.toSet());
 
         Map<Movie, Double> relatedMoviesSum = new HashMap<>();
         Map<Movie, Integer> relatedMoviesCount = new HashMap<>();
         for (User currentUser : usersForCurrentMovie) {
             userService.refresh(currentUser);
-
             for (Rating currentRating : currentUser.getRatings()) {
                 Movie currentMovie = currentRating.getMovie();
                 double rating = currentRating.getRating();
