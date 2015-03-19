@@ -2,6 +2,8 @@ package bg.unisofia.fmi.ai.movieinfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import bg.unisofia.fmi.ai.data.Genre;
@@ -72,33 +74,42 @@ public class MovieInfoFetcher {
         public void switchUser(User user) {
             primeRecommender = new KNN(user, NEIGHBOURS_NUMBER);
             secondRecommender = coldStartRecommender;
-
         }
 
         @Override
         public List<Movie> getTopMovies(int number) {
             List<Movie> primeResult = primeRecommender.getTopMovies(number);
             List<Movie> secondResult = secondRecommender.getTopMovies(number - primeResult.size());
-            primeResult.addAll(secondResult);
-            return primeResult;
+            Set<Movie> resultMovies = new TreeSet<Movie>();
+            resultMovies.addAll(primeResult);
+            resultMovies.addAll(secondResult);
+            ArrayList<Movie> result = new ArrayList<Movie>();
+            result.addAll(resultMovies);
+            return result;
         }
 
         @Override
         public List<Movie> getSimilarMovies(int number, Movie movie) {
             List<Movie> primeResult = primeRecommender.getSimilarMovies(number, movie);
-            System.out.println("Prime: " + primeResult.size());
             List<Movie> secondResult = secondRecommender.getSimilarMovies(number - primeResult.size(), movie);
-            System.out.println("Second: " + secondResult.size());
-            primeResult.addAll(secondResult);
-            return primeResult;
+            Set<Movie> resultMovies = new TreeSet<Movie>();
+            resultMovies.addAll(primeResult);
+            resultMovies.addAll(secondResult);
+            ArrayList<Movie> result = new ArrayList<Movie>();
+            result.addAll(resultMovies);
+            return result;
         }
 
         @Override
         public List<Movie> getMoviesWithGenre(int number, Genre genre) {
             List<Movie> primeResult = primeRecommender.getMoviesWithGenre(number, genre);
             List<Movie> secondResult = secondRecommender.getMoviesWithGenre(number - primeResult.size(), genre);
-            primeResult.addAll(secondResult);
-            return primeResult;
+            Set<Movie> resultMovies = new TreeSet<Movie>();
+            resultMovies.addAll(primeResult);
+            resultMovies.addAll(secondResult);
+            ArrayList<Movie> result = new ArrayList<Movie>();
+            result.addAll(resultMovies);
+            return result;
         }
 
         public Movie findMovie(int id) {
