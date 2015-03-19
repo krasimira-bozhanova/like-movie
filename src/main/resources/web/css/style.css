@@ -118,6 +118,9 @@ body {
 .logo {
 	float: left;
 }
+.logo img {
+	margin-left: -15px;
+}
 .header_top_right{
 	float:right;
 	padding:18px 0;
