@@ -503,7 +503,7 @@ body {
 	margin:20px 0;
 }
 .span_1_of_2 {
-	width: 68.6%;
+	width: 64.1%;
 	padding: 1.5% 1.5% 0 0;
 }
 .images_3_of_2 {
@@ -515,7 +515,7 @@ body {
 	width: 53.2%;
 }
 .span_3_of_1 {
-	width: 26.7%;
+	width: 31.2%;
 	padding: 1.5% 0 0 1.5%;
 }
 .images_3_of_2  img {
@@ -680,10 +680,9 @@ body {
 	font-size: 0.9em;
 }
 
-# Autocomplete box
-.autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
-.autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
+#movies-search { width: 320px; }
+
+.autocomplete-suggestions { outline: 1px solid #d2d2d2;  }
+.autocomplete-suggestion { padding: 4px 5px; white-space: nowrap; overflow: hidden; background: #fff; }
 .autocomplete-selected { background: #F0F0F0; }
-.autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
-.autocomplete-group { padding: 2px 5px; }
-.autocomplete-group strong { display: block; border-bottom: 1px solid #000; }
+.autocomplete-suggestions strong { font-weight: normal; color: #FC7D01; }
