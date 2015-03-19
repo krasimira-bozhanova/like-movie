@@ -48,7 +48,7 @@ public class Main {
             final GenreService genreService = new GenreService(connection);
 
             Map<String, Object> attributes = new HashMap<>();
-            List<MovieInfo> movies = new MovieInfoFetcher().getFrontPageMovies(FRONT_PAGE_MOVIES);
+            List<MovieInfo> movies = new MovieInfoFetcher(request.session().attribute(USERID_ATTR)).getFrontPageMovies(FRONT_PAGE_MOVIES);
             attributes.put("genres", genreService.list());
             attributes.put("selectedGenre", "all");
             attributes.put("movies", movies);
@@ -65,7 +65,7 @@ public class Main {
             Genre genre = genreService.find(Integer.parseInt(chosenGenreId));
 
             Map<String, Object> attributes = new HashMap<>();
-            List<MovieInfo> movies = new MovieInfoFetcher().getMoviesWithGenre(FRONT_PAGE_MOVIES, genre);
+            List<MovieInfo> movies = new MovieInfoFetcher(request.session().attribute(USERID_ATTR)).getMoviesWithGenre(FRONT_PAGE_MOVIES, genre);
             attributes.put("message", "Hello World!");
             attributes.put("genres", genreService.list());
             attributes.put("selectedGenre", genre.getName());
@@ -143,10 +143,12 @@ public class Main {
         get("/movies/:movieId", (request, response) -> {
             final ConnectionSource connection = DbUtil.getConnectionSource();
             final GenreService genreService = new GenreService(connection);
-            final MovieInfoFetcher fetcher = new MovieInfoFetcher();
             final RatingService ratingService = new RatingService(connection);
 
             final WatchingService watchingService = new WatchingService(connection);
+
+            //int userId = request.session().attribute(USERID_ATTR);
+            final MovieInfoFetcher fetcher = new MovieInfoFetcher(request.session().attribute(USERID_ATTR));
 
             int chosenMovieId = Integer.parseInt(request.params(":movieId"));
             MovieInfo movieInfo = fetcher.getMovie(chosenMovieId);
@@ -182,6 +184,7 @@ public class Main {
             Rating newRating = new Rating(user, movie, 1);
             ratingService.save(newRating);
             response.redirect("/movies/" + chosenMovieId);
+
             return null;
         });
 

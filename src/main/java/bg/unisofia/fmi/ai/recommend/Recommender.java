@@ -20,6 +20,10 @@ public interface Recommender {
         return movieService;
     }
 
+    public default UserService getUserService() {
+        return userService;
+    }
+
     public List<Movie> getTopMovies(int number);
 
     public List<Movie> getSimilarMovies(int number, Movie movie);
