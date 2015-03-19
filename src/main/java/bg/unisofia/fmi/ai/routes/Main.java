@@ -104,11 +104,11 @@ public class Main {
                     Map<String, Object> attributes = new HashMap<>();
                     List<MovieInfo> movies = new MovieInfoFetcher(request.session().attribute(USERID_ATTR))
                             .getMoviesWithGenre(FRONT_PAGE_MOVIES, genre);
-                    attributes.put("message", "Hello World!");
                     attributes.put("genres", genreService.list());
                     attributes.put("selectedGenre", genre.getName());
                     attributes.put("movies", movies);
                     attributes.put("username", request.session().attribute(USERNAME_ATTR));
+                    attributes.put("facebookAuthUrl", authUrl);
 
                     return new ModelAndView(attributes, "index.ftl");
                 }, new FreeMarkerEngine());
@@ -201,6 +201,7 @@ public class Main {
                     attributes.put("liked", ratingService.find(request.session().attribute(USERID_ATTR), chosenMovieId));
                     attributes.put("watched",
                             watchingService.find(request.session().attribute(USERID_ATTR), chosenMovieId));
+                    attributes.put("facebookAuthUrl", authUrl);
                     return new ModelAndView(attributes, "preview.ftl");
                 }, new FreeMarkerEngine());
 
