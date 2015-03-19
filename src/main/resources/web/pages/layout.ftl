@@ -73,7 +73,8 @@
 				    onSelect: function(suggestion) {
 				    	window.location = "/movies/" + suggestion.data;
 				    	return;
-				    }
+				    },
+				    width: 342
 				});
             });
         </script>
