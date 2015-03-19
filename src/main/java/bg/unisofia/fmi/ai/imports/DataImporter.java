@@ -5,8 +5,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
-import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import bg.unisofia.fmi.ai.dao.GenreService;
@@ -141,23 +139,23 @@ public class DataImporter {
                     movieService.save(movie);
 
                     // save its categories
-                    for (String categoryName : categories) {
-                        final String normalizedName = categoryName.substring(1,
-                                categoryName.length() - 1);
-                        final Optional<Genre> genre = genreService
-                                .findByName(normalizedName);
-
-                        final Genre g = genre.orElseGet(new Supplier<Genre>() {
-                            @Override
-                            public Genre get() {
-                                final Genre g = new Genre(normalizedName);
-                                genreService.save(g);
-                                return g;
-                            }
-                        });
-
-                        movieGenreService.save(new MovieGenre(movie, g));
-                    }
+//                    for (String categoryName : categories) {
+//                        final String normalizedName = categoryName.substring(1,
+//                                categoryName.length() - 1);
+//                        final Optional<Genre> genre = genreService
+//                                .findByName(normalizedName);
+//
+//                        final Genre g = genre.orElseGet(new Supplier<Genre>() {
+//                            @Override
+//                            public Genre get() {
+//                                final Genre g = new Genre(normalizedName);
+//                                genreService.save(g);
+//                                return g;
+//                            }
+//                        });
+//
+//                        movieGenreService.save(new MovieGenre(movie, g));
+//                    }
                 }
             });
         }
@@ -191,8 +189,6 @@ public class DataImporter {
             });
         }
 
-//        List<Integer> a = new ArrayList<Integer>();
-
         try (Stream<String> lines = Files.lines(
                 Paths.get(filesPath, "edits.data"), Charset.defaultCharset())) {
             lines.forEachOrdered(line -> {
@@ -209,13 +205,10 @@ public class DataImporter {
             });
         }
 
-//        Collections.sort(a);
-//        System.out.println(a.get(a.size() - 1));
-
         try (Stream<String> lines = Files.lines(
                 Paths.get(filesPath, "watchings.data"), Charset.defaultCharset())) {
             lines.forEachOrdered(line -> {
-                final String[] lineParts = line.split(":", 3);
+                final String[] lineParts = line.split(":", 2);
                 final int movieId = Integer.parseInt(lineParts[0]);
                 final int userId = Integer.parseInt(lineParts[1]);
 
@@ -223,6 +216,32 @@ public class DataImporter {
                 final Movie movie = movieService.find(movieId);
                 final Watching wathing = new Watching(user, movie);
                 watchingService.save(wathing);
+            });
+        }
+
+        try (Stream<String> lines = Files.lines(
+                Paths.get(filesPath, "genres.data"), Charset.defaultCharset())) {
+            lines.forEachOrdered(line -> {
+                final String[] lineParts = line.split(":", 2);
+                final int genreId = Integer.parseInt(lineParts[0]);
+                final String name = lineParts[1];
+
+                final Genre genre = new Genre(genreId, name);
+                genreService.save(genre);
+            });
+        }
+
+        try (Stream<String> lines = Files.lines(
+                Paths.get(filesPath, "moviegenres.data"), Charset.defaultCharset())) {
+            lines.forEachOrdered(line -> {
+                final String[] lineParts = line.split(":", 2);
+                final int movieId = Integer.parseInt(lineParts[0]);
+                final int genreId = Integer.parseInt(lineParts[1]);
+
+                final Genre genre = genreService.find(genreId);
+                final Movie movie = movieService.find(movieId);
+                final MovieGenre wathing = new MovieGenre(movie, genre);
+                movieGenreService.save(wathing);
             });
         }
 
