@@ -34,8 +34,6 @@ public class ColdStart implements Recommender {
         // TODO: Check genre
         movieService.refresh(movie);
         Set<User> usersForCurrentMovie = movie.getRatings().stream().map(r -> r.getUser()).collect(Collectors.toSet());
-        System.out.println("Users for movie: " + usersForCurrentMovie.size());
-        System.out.println("We want: " + number);
         Map<Movie, Double> relatedMoviesSum = new HashMap<>();
         Map<Movie, Integer> relatedMoviesCount = new HashMap<>();
         for (User currentUser : usersForCurrentMovie) {
@@ -53,8 +51,6 @@ public class ColdStart implements Recommender {
                 relatedMoviesCount.put(currentMovie, relatedMoviesCount.get(currentMovie) + 1);
             }
         }
-
-        System.out.println("RelatedMovies:" + relatedMoviesCount.size());
 
         Map<Movie, Double> relatedMoviesRating = new HashMap<>();
         for (Map.Entry<Movie, Integer> entry : relatedMoviesCount.entrySet()) {
@@ -76,12 +72,10 @@ public class ColdStart implements Recommender {
                     }
                 });
 
-        System.out.println("Related ratings: " + relatedMoviesRating.entrySet().size());
         sortedMovieSet.addAll(relatedMoviesRating.entrySet());
 
         List<Movie> limitedMovies = new ArrayList<>();
         int i = 0;
-        System.out.println("Sorted: " + sortedMovieSet.size());
         for (Map.Entry<Movie, Double> entry : sortedMovieSet) {
             Movie currentMovie = entry.getKey();
             if (i++ < number) {

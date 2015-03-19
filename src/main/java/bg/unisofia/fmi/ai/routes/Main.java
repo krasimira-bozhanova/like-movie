@@ -213,8 +213,7 @@ public class Main {
         get("/movies/:movieId/unlike", (request, response) -> {
             final ConnectionSource connection = DbUtil.getConnectionSource();
             final RatingService ratingService = new RatingService(connection);
-            final MovieService movieService = new MovieService(connection);
-            final UserService userService = new UserService(connection);
+
             int chosenMovieId = Integer.parseInt(request.params(":movieId"));
             ratingService.remove(request.session().attribute(USERID_ATTR), chosenMovieId);
             response.redirect("/movies/" + chosenMovieId);
