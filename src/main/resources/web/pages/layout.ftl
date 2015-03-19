@@ -69,6 +69,10 @@
 				                return { value: dataItem.title, data: (dataItem.id).toString() };
 				            })
 				        };
+				    },
+				    onSelect: function(suggestion) {
+				    	window.location = "/movies/" + suggestion.data;
+				    	return;
 				    }
 				});
             });

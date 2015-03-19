@@ -24,7 +24,7 @@
             	<div>
             	<#list row as m>
 	                <div class="grid_1_of_5 images_1_of_5">
-	                    <a href="/movies/${m.id?c }"><img src="${m.poster }" alt="${m.title }" /></a>
+	                    <a href="/movies/${m.id?c }"><img src="${m.poster!"/images/no-poster.jpg" }" alt="${m.title }" /></a>
 	                    <div><a href="/movies/${m.id?c }">${m.title }</a></div>
 	                </div>
                 </#list>

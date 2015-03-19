@@ -15,6 +15,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 public class MovieInfo {
+    private static final String UNKNOWN_PROPERTY_VALUE = "N/A";
+
     private int id;
     private String title;
     private String year;
@@ -56,6 +58,10 @@ public class MovieInfo {
 
     public String getPlot() {
         return plot;
+    }
+
+    public String getShortenedPlot(final int length) {
+        return plot.length() > length ? plot.substring(0, length) : plot;
     }
 
     public String getPoster() {
@@ -107,6 +113,10 @@ public class MovieInfo {
         movieInfo.id = movie.getId();
         movieInfo.title = movie.getTitle();
         movieInfo.imdbRating = root.getAsJsonObject().get("imdbRating").getAsString();
+
+        if (movieInfo.getPoster().equals(UNKNOWN_PROPERTY_VALUE)) {
+            movieInfo.poster = null;
+        }
 
         return movieInfo;
     }

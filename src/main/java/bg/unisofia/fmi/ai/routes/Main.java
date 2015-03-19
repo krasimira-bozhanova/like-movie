@@ -34,8 +34,8 @@ public class Main {
     public static void main(String[] args) throws IOException, SQLException {
         staticFileLocation("/web");
 
-        //DataImporter.movielensImporter("src/main/resources/datasets/movielens/");
-        //DataImporter.customWikiExtractedFilesImporter("src/main/resources/datasets/wiki/");
+        // DataImporter.movielensImporter("src/main/resources/datasets/movielens/");
+        // DataImporter.customWikiExtractedFilesImporter("src/main/resources/datasets/wiki/");
 
         get("/", (request, response) -> {
             final ConnectionSource connection = DbUtil.getConnectionSource();
@@ -147,12 +147,12 @@ public class Main {
             attributes.put("movie", movieInfo);
             attributes.put("username", request.session().attribute(USERNAME_ATTR));
             attributes.put("movies", fetcher.getSimilarMovies(SIMILAR_MOVIES_NUMBER, chosenMovieId));
-            //attributes.put("liked", currentUser.getRating(chosenMovieId));
-            //attributes.put("watched", currentUser.getWatched(chosenMovieId));
-            attributes.put("movies", fetcher.getSimilarMovies(SIMILAR_MOVIES_NUMBER, chosenMovieId));
+            // attributes.put("liked", currentUser.getRating(chosenMovieId));
+            // attributes.put("watched", currentUser.getWatched(chosenMovieId));
+                attributes.put("movies", fetcher.getSimilarMovies(SIMILAR_MOVIES_NUMBER, chosenMovieId));
 
-            return new ModelAndView(attributes, "preview.ftl");
-        }, new FreeMarkerEngine());
+                return new ModelAndView(attributes, "preview.ftl");
+            }, new FreeMarkerEngine());
 
         get("/movies", (request, response) -> {
             final ConnectionSource connection = DbUtil.getConnectionSource();

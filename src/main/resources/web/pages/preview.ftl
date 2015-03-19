@@ -6,7 +6,7 @@
         <div class="cont-desc span_1_of_2">
             <div class="product-details">
                 <div class="grid images_3_of_2">
-                    <img src="${movie.poster }" alt="${movie.title }" />
+                    <img src="${movie.poster!"/images/no-poster.jpg" }" alt="${movie.title }" />
                 </div>
                 <div class="desc span_3_of_2">
                     <h2>${movie.title }</h2>
@@ -43,12 +43,12 @@
             <#list movies as m>
                <div class="special_movies">
                 <div class="movie_poster">
-                    <a href="${m.id?c }"><img src="${m.poster }" alt="" /></a>
+                    <a href="${m.id?c }"><img src="${m.poster!"/images/no-poster.jpg" }" alt="" /></a>
                 </div>
                 
                 <div class="movie_desc">
                     <h3><a href="${m.id?c }">${m.title }</a></h3>
-                    <span>${m.plot[0..70]}...</span>
+                    <span>${m.shortenedPlot(70)}...</span>
                 </div>
                 <div class="clear"></div>
               </div>
