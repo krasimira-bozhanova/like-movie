@@ -49,7 +49,7 @@
             </div>
         </div>
         <div class="rightsidebar span_3_of_1 sidebar">
-            <h2>Specials</h2>
+            <h2>Similar movies</h2>
             <#list movies as m>
                <div class="special_movies">
                 <div class="movie_poster">

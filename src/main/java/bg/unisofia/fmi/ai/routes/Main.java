@@ -73,7 +73,6 @@ public class Main {
             List<Movie> movies = new Recommender(userId).getTopMovies(FRONT_PAGE_MOVIES);
             List<MovieInfo> moviesInfos = MovieInfo.getInfos(movies);
             attributes.put("genres", genreService.list());
-            attributes.put("selectedGenre", "all");
             attributes.put("movies", moviesInfos);
             attributes.put("username", request.session().attribute(USERNAME_ATTR));
             attributes.put("facebookAuthUrl", authUrl);

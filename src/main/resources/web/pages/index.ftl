@@ -16,7 +16,13 @@
     <div class="header_bottom_right">
         <div class="content_top">
             <div class="heading">
-                <h3>Recommended (${selectedGenre})</h3>
+            	<#if selectedGenre?has_content>
+					<h3>${selectedGenre}</h3>
+				<#elseif username?has_content>
+					<h3>Recommended for you</h3>
+				<#else>
+					<h3>Random movies</h3>
+				</#if>
             </div>
         </div>
         <div class="section group">
