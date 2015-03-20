@@ -787,3 +787,8 @@ body {
 	float: left;
 	width: 140px;
 }
+
+img.grayscale { 
+	-webkit-filter: grayscale(100%);
+	filter: grayscale(100%);
+}
