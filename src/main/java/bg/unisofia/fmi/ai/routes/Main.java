@@ -5,10 +5,12 @@ import static spark.Spark.post;
 import static spark.SparkBase.staticFileLocation;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import ru.hh.oauth.subscribe.apis.FacebookApi;
 import ru.hh.oauth.subscribe.core.builder.ServiceBuilder;
@@ -46,9 +48,11 @@ public class Main {
     private static final String USERNAME_ATTR = "username";
     private static final String USERID_ATTR = "userId";
 
+    private static final Properties FACEBOOK_CREDENTIALS = getApiCredentials("api/facebook-credentials.properties");
     private static final Token EMPTY_TOKEN = null;
     private static final OAuthService service = new ServiceBuilder().provider(FacebookApi.class)
-            .apiKey("1424586531175233").apiSecret("82d013d5d8cf08c6789c2b9f3b1cd50b").scope("user_likes")
+            .apiKey(FACEBOOK_CREDENTIALS.getProperty("apiKey"))
+            .apiSecret(FACEBOOK_CREDENTIALS.getProperty("apiSecret")).scope("email, user_likes")
             .callback("http://localhost:4567/oauth_callback_facebook").build();
     private static final String authUrl = service.getAuthorizationUrl(EMPTY_TOKEN);
 
@@ -264,5 +268,18 @@ public class Main {
             return null;
         });
 
+    }
+
+    private static Properties getApiCredentials(final String path) {
+        Properties prop = new Properties();
+
+        InputStream inputStream = Main.class.getClassLoader().getResourceAsStream(path);
+        try {
+            prop.load(inputStream);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return prop;
     }
 }
