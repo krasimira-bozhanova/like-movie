@@ -51,14 +51,11 @@ public class Main {
 
     private static final Properties FACEBOOK_CREDENTIALS = getApiCredentials("api/facebook-credentials.properties");
     private static final Token EMPTY_TOKEN = null;
-    private static final OAuthService service = new ServiceBuilder()
-            .provider(FacebookApi.class)
+    private static final OAuthService service = new ServiceBuilder().provider(FacebookApi.class)
             .apiKey(FACEBOOK_CREDENTIALS.getProperty("apiKey"))
-            .apiSecret(FACEBOOK_CREDENTIALS.getProperty("apiSecret"))
-            .scope("email, user_likes")
+            .apiSecret(FACEBOOK_CREDENTIALS.getProperty("apiSecret")).scope("email, user_likes")
             .callback("http://localhost:4567/oauth_callback_facebook").build();
-    private static final String authUrl = service
-            .getAuthorizationUrl(EMPTY_TOKEN);
+    private static final String authUrl = service.getAuthorizationUrl(EMPTY_TOKEN);
 
     public static void main(String[] args) throws IOException, SQLException {
         staticFileLocation("/web");
@@ -66,74 +63,55 @@ public class Main {
         // DataImporter.movielensImporter("src/main/resources/datasets/movielens/");
         // DataImporter.customWikiExtractedFilesImporter("src/main/resources/datasets/wiki/");
 
-        get("/",
-                (request, response) -> {
-                    final ConnectionSource connection = DbUtil
-                            .getConnectionSource();
-                    final GenreService genreService = new GenreService(
-                            connection);
+        get("/", (request, response) -> {
+            final ConnectionSource connection = DbUtil.getConnectionSource();
+            final GenreService genreService = new GenreService(connection);
 
-                    Map<String, Object> attributes = new HashMap<>();
-                    Integer userId = request.session().attribute(USERID_ATTR);
-                    List<Movie> movies = new Recommender(userId)
-                            .getTopMovies(FRONT_PAGE_MOVIES);
-                    List<MovieInfo> moviesInfos = MovieInfo.getInfos(movies);
-                    attributes.put("genres", genreService.list());
-                    attributes.put("selectedGenre", "all");
-                    attributes.put("movies", moviesInfos);
-                    attributes.put("username",
-                            request.session().attribute(USERNAME_ATTR));
+            Map<String, Object> attributes = new HashMap<>();
+            Integer userId = request.session().attribute(USERID_ATTR);
+            List<Movie> movies = new Recommender(userId).getTopMovies(FRONT_PAGE_MOVIES);
+            List<MovieInfo> moviesInfos = MovieInfo.getInfos(movies);
+            attributes.put("genres", genreService.list());
+            attributes.put("selectedGenre", "all");
+            attributes.put("movies", moviesInfos);
+            attributes.put("username", request.session().attribute(USERNAME_ATTR));
+            attributes.put("facebookAuthUrl", authUrl);
 
-                    attributes.put("facebookAuthUrl", authUrl);
+            return new ModelAndView(attributes, "index.ftl");
+        }, new FreeMarkerEngine());
 
-                    return new ModelAndView(attributes, "index.ftl");
-                }, new FreeMarkerEngine());
+        // TODO store id
+        get("/oauth_callback_facebook", (request, response) -> {
+            Verifier verifier = new Verifier(request.queryParams("code"));
+            Token accessToken = service.getAccessToken(EMPTY_TOKEN, verifier);
+            OAuthRequest oauthRequest = new OAuthRequest(Verb.GET, "https://graph.facebook.com/me", service);
+            service.signRequest(accessToken, oauthRequest);
+            Response oauthResponse = oauthRequest.send();
 
-        get("/oauth_callback_facebook",
-                (request, response) -> {
+            JsonParser parser = new JsonParser();
+            JsonObject res = (JsonObject) parser.parse(oauthResponse.getBody());
+            request.session().attribute(USERNAME_ATTR, res.get("name").getAsString());
 
-                    Verifier verifier = new Verifier(request
-                            .queryParams("code"));
-                    Token accessToken = service.getAccessToken(EMPTY_TOKEN,
-                            verifier);
-                    OAuthRequest oauthRequest = new OAuthRequest(Verb.GET,
-                            "https://graph.facebook.com/me", service);
-                    service.signRequest(accessToken, oauthRequest);
-                    Response oauthResponse = oauthRequest.send();
-
-                    // TODO here decide how to store user id for votes and stuff
-                    JsonParser parser = new JsonParser();
-                    JsonObject res = (JsonObject) parser.parse(oauthResponse
-                            .getBody());
-                    request.session().attribute(USERNAME_ATTR,
-                            res.get("name").getAsString());
-
-                    response.redirect("/");
-                    return null;
-                });
+            response.redirect("/");
+            return null;
+        });
 
         get("/genre/:genreId",
                 (request, response) -> {
-                    final ConnectionSource connection = DbUtil
-                            .getConnectionSource();
-                    final GenreService genreService = new GenreService(
-                            connection);
+                    final ConnectionSource connection = DbUtil.getConnectionSource();
+                    final GenreService genreService = new GenreService(connection);
 
                     String chosenGenreId = request.params(":genreId");
-                    Genre genre = genreService.find(Integer
-                            .parseInt(chosenGenreId));
+                    Genre genre = genreService.find(Integer.parseInt(chosenGenreId));
 
                     Map<String, Object> attributes = new HashMap<>();
-                    List<Movie> movies = new Recommender(request.session()
-                            .attribute(USERID_ATTR)).getMoviesWithGenre(
+                    List<Movie> movies = new Recommender(request.session().attribute(USERID_ATTR)).getMoviesWithGenre(
                             FRONT_PAGE_MOVIES, genre);
                     List<MovieInfo> moviesInfos = MovieInfo.getInfos(movies);
-                    attributes.put("message", "Hello World!");
                     attributes.put("genres", genreService.list());
                     attributes.put("selectedGenre", genre.getName());
                     attributes.put("movies", moviesInfos);
-                    attributes.put("username",
-                            request.session().attribute(USERNAME_ATTR));
+                    attributes.put("username", request.session().attribute(USERNAME_ATTR));
                     attributes.put("facebookAuthUrl", authUrl);
 
                     return new ModelAndView(attributes, "index.ftl");
@@ -168,14 +146,6 @@ public class Main {
             return request;
         });
 
-        get("/login", (request, response) -> {
-            Map<String, Object> attributes = new HashMap<>();
-            attributes.put("message", "Login");
-
-            return new ModelAndView(attributes, "login.ftl");
-
-        }, new FreeMarkerEngine());
-
         post("/login", (request, response) -> {
 
             final ConnectionSource connection = DbUtil.getConnectionSource();
@@ -188,7 +158,7 @@ public class Main {
             try {
                 loggedUser = userService.login(username, password);
             } catch (Exception e) {
-                response.redirect("/login");
+                response.redirect("/");
                 return request;
             }
 
@@ -208,39 +178,28 @@ public class Main {
 
         get("/movies/:movieId",
                 (request, response) -> {
-                    final ConnectionSource connection = DbUtil
-                            .getConnectionSource();
-                    final GenreService genreService = new GenreService(
-                            connection);
-                    final RatingService ratingService = new RatingService(
-                            connection);
-                    final MovieService movieService = new MovieService(
-                            connection);
-                    final WatchingService watchingService = new WatchingService(
-                            connection);
+                    final ConnectionSource connection = DbUtil.getConnectionSource();
+                    final GenreService genreService = new GenreService(connection);
+                    final RatingService ratingService = new RatingService(connection);
+                    final MovieService movieService = new MovieService(connection);
+                    final WatchingService watchingService = new WatchingService(connection);
 
-                    int userId = request.session().attribute(USERID_ATTR);
+                    Integer userId = request.session().attribute(USERID_ATTR);
                     final Recommender recommender = new Recommender(userId);
 
-                    int chosenMovieId = Integer.parseInt(request
-                            .params(":movieId"));
-                    MovieInfo movieInfo = MovieInfo.create(movieService
-                            .find(chosenMovieId));
-                    List<MovieInfo> similarMovies = MovieInfo
-                            .getInfos(recommender.getSimilarMovies(
-                                    SIMILAR_MOVIES_NUMBER, chosenMovieId));
+                    int chosenMovieId = Integer.parseInt(request.params(":movieId"));
+                    MovieInfo movieInfo = MovieInfo.create(movieService.find(chosenMovieId));
+                    List<MovieInfo> similarMovies = MovieInfo.getInfos(recommender.getSimilarMovies(
+                            SIMILAR_MOVIES_NUMBER, chosenMovieId));
 
                     Map<String, Object> attributes = new HashMap<>();
                     attributes.put("genres", genreService.list());
                     attributes.put("movie", movieInfo);
-                    attributes.put("username",
-                            request.session().attribute(USERNAME_ATTR));
+                    attributes.put("username", request.session().attribute(USERNAME_ATTR));
                     attributes.put("movies", similarMovies);
-                    attributes.put("liked",
-                            ratingService.find(userId, chosenMovieId));
+                    attributes.put("liked", ratingService.find(userId, chosenMovieId));
                     attributes.put("facebookAuthUrl", authUrl);
-                    attributes.put("watched",
-                            watchingService.find(userId, chosenMovieId));
+                    attributes.put("watched", watchingService.find(userId, chosenMovieId));
                     return new ModelAndView(attributes, "preview.ftl");
                 }, new FreeMarkerEngine());
 
@@ -272,34 +231,26 @@ public class Main {
             return null;
         });
 
-        get("/movies/:movieId/watch",
-                (request, response) -> {
-                    final ConnectionSource connection = DbUtil
-                            .getConnectionSource();
-                    final WatchingService watchingService = new WatchingService(
-                            connection);
-                    final MovieService movieService = new MovieService(
-                            connection);
-                    final UserService userService = new UserService(connection);
-                    int chosenMovieId = Integer.parseInt(request
-                            .params(":movieId"));
-                    Movie movie = movieService.find(chosenMovieId);
-                    User user = userService.find(request.session().attribute(
-                            USERID_ATTR));
-                    Watching newWatching = new Watching(user, movie);
-                    watchingService.save(newWatching);
-                    response.redirect("/movies/" + chosenMovieId);
-                    return null;
-                });
+        get("/movies/:movieId/watch", (request, response) -> {
+            final ConnectionSource connection = DbUtil.getConnectionSource();
+            final WatchingService watchingService = new WatchingService(connection);
+            final MovieService movieService = new MovieService(connection);
+            final UserService userService = new UserService(connection);
+            int chosenMovieId = Integer.parseInt(request.params(":movieId"));
+            Movie movie = movieService.find(chosenMovieId);
+            User user = userService.find(request.session().attribute(USERID_ATTR));
+            Watching newWatching = new Watching(user, movie);
+            watchingService.save(newWatching);
+            response.redirect("/movies/" + chosenMovieId);
+            return null;
+        });
 
         get("/movies/:movieId/unwatch", (request, response) -> {
             final ConnectionSource connection = DbUtil.getConnectionSource();
-            final WatchingService watchingService = new WatchingService(
-                    connection);
+            final WatchingService watchingService = new WatchingService(connection);
 
             int chosenMovieId = Integer.parseInt(request.params(":movieId"));
-            watchingService.remove(request.session().attribute(USERID_ATTR),
-                    chosenMovieId);
+            watchingService.remove(request.session().attribute(USERID_ATTR), chosenMovieId);
             response.redirect("/movies/" + chosenMovieId);
             return null;
         });
@@ -323,8 +274,7 @@ public class Main {
     private static Properties getApiCredentials(final String path) {
         Properties prop = new Properties();
 
-        InputStream inputStream = Main.class.getClassLoader()
-                .getResourceAsStream(path);
+        InputStream inputStream = Main.class.getClassLoader().getResourceAsStream(path);
         try {
             prop.load(inputStream);
         } catch (IOException e) {

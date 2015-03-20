@@ -1,7 +1,6 @@
 package bg.unisofia.fmi.ai.recommend.algorithm;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -31,33 +30,31 @@ import com.j256.ormlite.support.ConnectionSource;
 
 public class Recommender {
     private User user;
-    private DataModel model;
-    private final TanimotoCoefficientSimilarity similarity;
+    private static final DataModel model;
+    static {
+        try {
+            model = new FileDataModel(new File("src/main/resources/datasets/wiki/recommend.data"));
+        } catch (Exception oops) {
+            throw new RuntimeException();
+        }
+    }
+    private static final TanimotoCoefficientSimilarity similarity = new TanimotoCoefficientSimilarity(model);
 
     final ConnectionSource connection = DbUtil.getConnectionSource();
     final UserService userService = new UserService(connection);
     final MovieService movieService = new MovieService(connection);
 
     public Recommender() {
-        try {
-            model = new FileDataModel(new File(
-                    "src/main/resources/datasets/wiki/recommend.data"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        similarity = new TanimotoCoefficientSimilarity(model);
     }
 
     public Recommender(Integer userId) {
-        this();
         if (userId != null) {
             this.user = userService.find(userId);
         }
     }
 
     private GenericUserBasedRecommender getUserRecommender() {
-        UserNeighborhood neighborhood = new ThresholdUserNeighborhood(0.1,
-                similarity, model);
+        UserNeighborhood neighborhood = new ThresholdUserNeighborhood(0.1, similarity, model);
         return new GenericBooleanPrefUserBasedRecommender(model, neighborhood, similarity);
     }
 
@@ -66,13 +63,11 @@ public class Recommender {
     }
 
     private List<Integer> getWatched() {
-        return user != null ? user.getWatchedMoviesIds()
-                : new ArrayList<Integer>();
+        return user != null ? user.getWatchedMoviesIds() : new ArrayList<Integer>();
     }
 
     private List<Integer> getLiked() {
-        return user != null ? user.getLikedMoviesIds()
-                : new ArrayList<Integer>();
+        return user != null ? user.getLikedMoviesIds() : new ArrayList<Integer>();
     }
 
     public List<Movie> getTopMovies(int number) {
@@ -80,18 +75,15 @@ public class Recommender {
             List<RecommendedItem> recommendedItems = new ArrayList<>();
             List<Integer> watched = getWatched();
             try {
-                recommendedItems = getUserRecommender().recommend(user.getId(),
-                        number + watched.size());
+                recommendedItems = getUserRecommender().recommend(user.getId(), number + watched.size());
             } catch (TasteException e) {
                 e.printStackTrace();
             }
-            Set<Integer> recommendedMovies = recommendedItems.stream()
-                    .map(r -> (int) r.getItemID()).collect(Collectors.toSet());
+            Set<Integer> recommendedMovies = recommendedItems.stream().map(r -> (int) r.getItemID())
+                    .collect(Collectors.toSet());
             recommendedMovies.removeAll(watched);
-            int retrievedNumber = recommendedMovies.size() < number ? recommendedMovies
-                    .size() : number;
-            List<Movie> resultList = recommendedMovies.stream()
-                    .map(i -> movieService.find(i))
+            int retrievedNumber = recommendedMovies.size() < number ? recommendedMovies.size() : number;
+            List<Movie> resultList = recommendedMovies.stream().map(i -> movieService.find(i))
                     .collect(Collectors.toList());
             return resultList.subList(0, retrievedNumber);
         }
@@ -103,20 +95,17 @@ public class Recommender {
         List<Integer> watched = getWatched();
         List<Integer> liked = getLiked();
         try {
-            recommendedItems = getItemRecommender().mostSimilarItems(movieId,
-                    number + watched.size() + liked.size());
+            recommendedItems = getItemRecommender().mostSimilarItems(movieId, number + watched.size() + liked.size());
         } catch (TasteException e) {
             e.printStackTrace();
         }
-        Set<Integer> recommendedMovies = recommendedItems.stream()
-                .map(r -> (int) r.getItemID()).collect(Collectors.toSet());
+        Set<Integer> recommendedMovies = recommendedItems.stream().map(r -> (int) r.getItemID())
+                .collect(Collectors.toSet());
         recommendedMovies.removeAll(watched);
         recommendedMovies.removeAll(liked);
 
-        int retrievedNumber = recommendedMovies.size() < number ? recommendedMovies
-                .size() : number;
-        List<Movie> resultList = recommendedMovies.stream()
-                .map(i -> movieService.find(i)).collect(Collectors.toList());
+        int retrievedNumber = recommendedMovies.size() < number ? recommendedMovies.size() : number;
+        List<Movie> resultList = recommendedMovies.stream().map(i -> movieService.find(i)).collect(Collectors.toList());
         return resultList.subList(0, retrievedNumber);
 
     }
@@ -132,11 +121,10 @@ public class Recommender {
         setMoviesWithGenre.removeAll(likedMovies);
         setMoviesWithGenre.removeAll(watchedMovies);
 
-        int retrievedNumber = setMoviesWithGenre.size() < number ? setMoviesWithGenre
-                .size() : number;
+        int retrievedNumber = setMoviesWithGenre.size() < number ? setMoviesWithGenre.size() : number;
 
-        List<Movie> resultList = setMoviesWithGenre.stream()
-                .map(i -> movieService.find(i)).collect(Collectors.toList());
+        List<Movie> resultList = setMoviesWithGenre.stream().map(i -> movieService.find(i))
+                .collect(Collectors.toList());
         return resultList.subList(0, retrievedNumber);
     }
 
@@ -144,18 +132,15 @@ public class Recommender {
         List<Integer> likedMovies = getLiked();
         List<Integer> watchedMovies = getWatched();
 
-        List<Integer> listMovies = movieService.getRandom(number
-                + likedMovies.size() + watchedMovies.size());
+        List<Integer> listMovies = movieService.getRandom(number + likedMovies.size() + watchedMovies.size());
         Set<Integer> setMovies = new TreeSet<Integer>(listMovies);
 
         setMovies.removeAll(likedMovies);
         setMovies.removeAll(watchedMovies);
 
-        int retrievedNumber = setMovies.size() < number ? setMovies.size()
-                : number;
+        int retrievedNumber = setMovies.size() < number ? setMovies.size() : number;
 
-        List<Movie> resultList = setMovies.stream()
-                .map(i -> movieService.find(i)).collect(Collectors.toList());
+        List<Movie> resultList = setMovies.stream().map(i -> movieService.find(i)).collect(Collectors.toList());
         return resultList.subList(0, retrievedNumber);
     }
 
