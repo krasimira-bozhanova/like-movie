@@ -8,6 +8,7 @@ import java.util.Map;
 import bg.unisofia.fmi.ai.data.User;
 import bg.unisofia.fmi.ai.db.util.DatasetsUtil;
 
+import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.support.ConnectionSource;
 
@@ -24,7 +25,9 @@ public class UserService {
     }
 
     public User find(final int userId) {
-        return userDao.queryForId(userId);
+        User u = userDao.queryForId(userId);
+        userDao.refresh(u);
+        return u;
     }
 
     public User find(final String username, final String password) {
@@ -81,6 +84,20 @@ public class UserService {
 
     public void refresh(User user) {
         userDao.refresh(user);
+    }
+
+    public double getMeanRating(User user) {
+        GenericRawResults<String[]> rawResults = userDao
+                .queryRaw("select AVG(rating) from (select * from rating where user_id=" + user.getId() + " ) group by user_id");
+
+        String meanRating = "";
+        try {
+            meanRating = rawResults.getResults().get(0)[0];
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Mean rating " + user.getId() + ": " + meanRating);
+        return Double.valueOf(meanRating);
     }
 
 }

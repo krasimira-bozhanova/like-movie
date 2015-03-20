@@ -9,6 +9,7 @@ import bg.unisofia.fmi.ai.dao.UserService;
 import bg.unisofia.fmi.ai.data.Movie;
 import bg.unisofia.fmi.ai.data.Rating;
 import bg.unisofia.fmi.ai.data.User;
+import bg.unisofia.fmi.ai.data.Watching;
 import bg.unisofia.fmi.ai.db.util.DbUtil;
 
 import com.j256.ormlite.support.ConnectionSource;
@@ -54,11 +55,11 @@ public class UserStatistics {
                         });
         relatedUsers.remove(user);
 
+
         return relatedUsers;
     }
 
     public static Set<Movie> getMoviesInCommon(final User user, final User otherUser) {
-        userService.refresh(otherUser);
         final Set<Movie> movies = new TreeSet<>(user.getRatings().stream().map(Rating::getMovie)
                 .collect(Collectors.toSet()));
         final Set<Movie> otherUserMovies = new TreeSet<>(otherUser.getRatings().stream().map(Rating::getMovie)
@@ -74,8 +75,11 @@ public class UserStatistics {
                 .collect(Collectors.toSet()));
         final Set<Movie> otherUserMovies = new TreeSet<>(otherUser.getRatings().stream().map(Rating::getMovie)
                 .collect(Collectors.toSet()));
+        final Set<Movie> watchedMovies = new TreeSet<>(otherUser.getWatchings().stream().map(Watching::getMovie)
+                .collect(Collectors.toSet()));
 
         movies.removeAll(otherUserMovies);
+        movies.removeAll(watchedMovies);
 
         return movies;
     }
