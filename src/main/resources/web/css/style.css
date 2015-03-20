@@ -732,11 +732,11 @@ body {
 
 
 /* Login/register box */
-#login {
+#login, #signup {
     position:relative;
 }
 
-#login-form {
+.login-form {
     position:absolute;
     z-index:999;
     background-color:#fff;
@@ -749,8 +749,11 @@ body {
     display:none;
 }
 
+#reg-form {
+	left: -275px;
+}
 
-#login-form input {
+.login-form input {
     display:block;
     border: none;
 	background: #f1f1f1;
@@ -761,29 +764,29 @@ body {
 	box-shadow: 0 1px 1px #ccc inset;
 }
 
-#login-form input:focus {
+.login-form input:focus {
   background-color: #fff;
   border-color: #e8c291;
   outline: none;
   box-shadow: 0 0 0 1px #e8c291 inset;
 }
 
-#login-form #login-button {
+.login-form .login-button {
 	background-color: #FC7D01;
 	color: #fff;
 	font-weight: bold;
 	border: none;
 }
 
-#login-form a {
+.login-form a {
 	padding: 0;
 }
 
-#login-form-left-pane {
+.login-form-left-pane {
 	float: left;
 	width: 175px;
 }
-#login-form-right-pane {
+.login-form-right-pane {
 	float: left;
 	width: 140px;
 }
