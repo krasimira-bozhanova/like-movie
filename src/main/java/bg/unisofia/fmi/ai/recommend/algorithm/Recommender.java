@@ -30,24 +30,25 @@ import com.j256.ormlite.support.ConnectionSource;
 
 public class Recommender {
     private User user;
-    public static final DataModel model;
-    static {
-        try {
-            model = new FileDataModel(new File("src/main/resources/datasets/wiki/recommend.data"));
-        } catch (Exception oops) {
-            throw new RuntimeException();
-        }
-    }
-    private static final TanimotoCoefficientSimilarity similarity = new TanimotoCoefficientSimilarity(model);
+    public final DataModel model;
+
+    private final TanimotoCoefficientSimilarity similarity;
 
     final ConnectionSource connection = DbUtil.getConnectionSource();
     final UserService userService = new UserService(connection);
     final MovieService movieService = new MovieService(connection);
 
     public Recommender() {
+        try {
+            model = new FileDataModel(new File("src/main/resources/datasets/wiki/recommend.data"));
+        } catch (Exception oops) {
+            throw new RuntimeException();
+        }
+        similarity = new TanimotoCoefficientSimilarity(model);
     }
 
     public Recommender(Integer userId) {
+        this();
         if (userId != null) {
             this.user = userService.find(userId);
         }

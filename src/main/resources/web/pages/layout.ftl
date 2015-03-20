@@ -50,6 +50,7 @@
 				                <input type="submit" class="login-button" value="Sign up" />
 				            </form>
 					        </div>
+
 					    </li>
                         <#else>
                             <li><a href="/logout">Logout</a></li>
