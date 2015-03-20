@@ -23,24 +23,33 @@
 					  <ul>
 					  <#if !username?has_content>
 					    <li id="login">
-					      <a id="login-trigger" tabindex="0">Log in</a>
-					      <div id="login-form">
-					      	  <div id="login-form-left-pane">
+					      <a class="login-trigger" tabindex="0">Log in</a>
+					      <div class="login-form">
+					      	  <div class="login-form-left-pane">
 					            <form action="/login" method="post">
 					                <input type="text" name="username" placeholder="Username" />
 					                <input type="password" name="password" placeholder="Password" />
 
-					                <input type="submit" id="login-button" value="Log In" />
+					                <input type="submit" class="login-button" value="Log In" />
 					            </form>
 					            </div>
-					            <div id="login-form-right-pane">
+					            <div class="login-form-right-pane">
 					            	<a href="${facebookAuthUrl}"><img src="/images/facebook-login.png" alt="Login with facebook" /></a>
 					            </div>
 					            <div class="clear"></div>
 					        </div>                 
 					    </li>
 					    <li id="signup">
-					      <a href="">Sign up</a>
+					      <a class="login-trigger" tabindex="0">Sign up</a>
+					      <div class="login-form" id="reg-form">
+				            <form action="/register" method="post">
+				                <input type="text" name="username" placeholder="Username" />
+				                <input type="password" name="password" placeholder="Password" />
+				                <input type="password" name="repeat_password" placeholder="Repeat password">
+
+				                <input type="submit" class="login-button" value="Sign up" />
+				            </form>
+					        </div>
 					    </li>
                         <#else>
                             <li><a href="/logout">Logout</a></li>
@@ -95,8 +104,8 @@
 				    width: 342
 				});
 
-				$('#login-trigger').click(function(){
-	    			$(this).next('#login-form').slideToggle();
+				$('.login-trigger').click(function(){
+	    			$(this).next('.login-form').slideToggle();
 	            });
 	        });
         </script>

@@ -118,13 +118,6 @@ public class Main {
                     return new ModelAndView(attributes, "index.ftl");
                 }, new FreeMarkerEngine());
 
-        get("/register", (request, response) -> {
-            Map<String, Object> attributes = new HashMap<>();
-            attributes.put("message", "Register");
-            return new ModelAndView(attributes, "register.ftl");
-
-        }, new FreeMarkerEngine());
-
         post("/register", (request, response) -> {
             final ConnectionSource connection = DbUtil.getConnectionSource();
             final UserService userService = new UserService(connection);
@@ -136,7 +129,7 @@ public class Main {
             try {
                 userService.registerUser(username, password, passwordRepeat);
             } catch (Exception e) {
-                response.redirect("/register");
+                response.redirect("/");
                 return null;
             }
             User user = userService.login(username, password);
