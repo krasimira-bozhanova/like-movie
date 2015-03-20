@@ -27,14 +27,14 @@
                         <div class="rating">
                               <#if username?has_content>
                                   <#if liked>
-                                     <a href="${movie.id?c}/unlike">Unlike</a>
+                                     <a href="${movie.id?c}/unlike"><img width="48" src="/images/liked.png" alt="Unlike" title="Unlike"></img></a>
                                   <#else>
-                                     <a href="${movie.id?c}/like">Like</a>
+                                     <a href="${movie.id?c}/like"><img width="48" src="/images/liked.png" class="grayscale" alt="Like" title="Like"></img></a>
                                   </#if> 
                                   <#if watched>
-                                     <a href="${movie.id?c}/unwatch">Unwatch</a> 
+                                     <a href="${movie.id?c}/unwatch"><img width="48" src="/images/watched.png" alt="Unwatch" title="Unwatch"></img></a> 
                                   <#else>
-                                     <a href="${movie.id?c}/watch">Watch</a>
+                                     <a href="${movie.id?c}/watch"><img width="48" src="/images/watched.png" class="grayscale" alt="Watch" title="Watch"></a>
                                   </#if> 
                               </#if>
                         </div>
