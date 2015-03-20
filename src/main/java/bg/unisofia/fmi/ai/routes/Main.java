@@ -7,6 +7,7 @@ import static spark.SparkBase.staticFileLocation;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -212,6 +213,7 @@ public class Main {
             return movieService.autocompleteSearch(searchText);
         }, new JsonTransformer());
 
+        // TODO fix me later
         get("/movies/:movieId/like", (request, response) -> {
             final ConnectionSource connection = DbUtil.getConnectionSource();
             final RatingService ratingService = new RatingService(connection);
@@ -226,6 +228,7 @@ public class Main {
             Rating newRating = new Rating(user, movie, 1);
             ratingService.save(newRating);
             DatasetsUtil.setPreference(userId, chosenMovieId);
+            Recommender.model.refresh(new ArrayList<>());
 
             response.redirect("/movies/" + chosenMovieId);
             return null;
