@@ -30,7 +30,7 @@ import com.j256.ormlite.support.ConnectionSource;
 
 public class Recommender {
     private User user;
-    private static final DataModel model;
+    public static final DataModel model;
     static {
         try {
             model = new FileDataModel(new File("src/main/resources/datasets/wiki/recommend.data"));
