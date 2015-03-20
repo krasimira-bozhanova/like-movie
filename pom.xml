@@ -52,6 +52,11 @@
 			<groupId>ru.hh.oauth.subscribe</groupId>
 			<artifactId>apis</artifactId>
 			<version>3.1</version>
+	     </dependency>
+	     <dependency>
+		    <groupId>org.apache.mahout</groupId>
+		    <artifactId>mahout-core</artifactId>
+		    <version>0.9</version>
 		</dependency>
 	</dependencies>
 
